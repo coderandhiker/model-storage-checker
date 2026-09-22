@@ -11,6 +11,12 @@ from typing import Sequence, TextIO
 
 from . import __version__
 from .errors import CheckerError
+from .lm_studio import (
+    DEFAULT_BASE_URL as LM_STUDIO_DEFAULT_BASE_URL,
+    DEFAULT_MODEL_ROOTS as LM_STUDIO_DEFAULT_MODEL_ROOTS,
+    DEFAULT_TIMEOUT as LM_STUDIO_DEFAULT_TIMEOUT,
+    LMStudioProvider,
+)
 from .models import ModelRecord
 from .ollama import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, OllamaProvider
 from .providers import ProviderRegistry, ProviderStatus
@@ -58,6 +64,34 @@ def build_parser() -> argparse.ArgumentParser:
         type=_positive_timeout,
         metavar="SECONDS",
         help=f"Ollama request timeout (default: {DEFAULT_TIMEOUT:g} seconds)",
+    )
+    parser.add_argument(
+        "--lm-studio-base-url",
+        default=LM_STUDIO_DEFAULT_BASE_URL,
+        help=(
+            "LM Studio API base URL "
+            f"(default: {LM_STUDIO_DEFAULT_BASE_URL})"
+        ),
+    )
+    parser.add_argument(
+        "--lm-studio-timeout",
+        default=LM_STUDIO_DEFAULT_TIMEOUT,
+        type=_positive_timeout,
+        metavar="SECONDS",
+        help=(
+            "LM Studio request timeout "
+            f"(default: {LM_STUDIO_DEFAULT_TIMEOUT:g} seconds)"
+        ),
+    )
+    parser.add_argument(
+        "--lm-studio-model-root",
+        action="append",
+        dest="lm_studio_model_roots",
+        metavar="PATH",
+        help=(
+            "LM Studio model directory; repeat for multiple roots "
+            f"(default: {LM_STUDIO_DEFAULT_MODEL_ROOTS[0]})"
+        ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -139,6 +173,11 @@ def main(
                 OllamaProvider(
                     base_url=args.ollama_base_url,
                     timeout=args.ollama_timeout,
+                ),
+                LMStudioProvider(
+                    base_url=args.lm_studio_base_url,
+                    timeout=args.lm_studio_timeout,
+                    model_roots=args.lm_studio_model_roots,
                 ),
             )
         )

@@ -6,11 +6,13 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 from urllib.error import URLError
 
 from model_storage_checker.cli import ExitCode, main
+from model_storage_checker.providers import ProviderStatus
 
 
 class CliTests(unittest.TestCase):
@@ -20,6 +22,13 @@ class CliTests(unittest.TestCase):
         with patch(
             "model_storage_checker.ollama.urlopen",
             side_effect=URLError("connection refused"),
+        ), patch(
+            "model_storage_checker.cli.LMStudioProvider.status",
+            return_value=ProviderStatus(
+                name="lm-studio",
+                available=False,
+                message="not running",
+            ),
         ):
             exit_code = main(["providers"], stdout=stdout)
 
@@ -33,6 +42,13 @@ class CliTests(unittest.TestCase):
         with patch(
             "model_storage_checker.ollama.urlopen",
             side_effect=URLError("connection refused"),
+        ), patch(
+            "model_storage_checker.cli.LMStudioProvider.status",
+            return_value=ProviderStatus(
+                name="lm-studio",
+                available=False,
+                message="not running",
+            ),
         ):
             exit_code = main(
                 ["--output", "json", "providers"], stdout=stdout
@@ -40,11 +56,15 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(exit_code, ExitCode.SUCCESS)
         payload = json.loads(stdout.getvalue())
-        self.assertEqual(payload["providers"][0]["name"], "ollama")
-        self.assertFalse(payload["providers"][0]["available"])
+        providers = {
+            provider["name"]: provider
+            for provider in payload["providers"]
+        }
+        self.assertFalse(providers["ollama"]["available"])
         self.assertIn(
-            "connection refused", payload["providers"][0]["message"]
+            "connection refused", providers["ollama"]["message"]
         )
+        self.assertFalse(providers["lm-studio"]["available"])
 
     def test_missing_provider_is_a_json_error(self) -> None:
         stdout = io.StringIO()
@@ -139,6 +159,43 @@ class CliTests(unittest.TestCase):
             "provider_error",
         )
 
+    def test_lm_studio_options_are_wired_to_provider(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        with tempfile.TemporaryDirectory() as model_root:
+            with patch(
+                "model_storage_checker.lm_studio.urlopen",
+                return_value=io.BytesIO(b'{"data": []}'),
+            ) as open_url:
+                exit_code = main(
+                    [
+                        "--output",
+                        "json",
+                        "--lm-studio-base-url",
+                        "http://lm-studio.test:4321",
+                        "--lm-studio-timeout",
+                        "1.25",
+                        "--lm-studio-model-root",
+                        model_root,
+                        "list",
+                        "--provider",
+                        "lm-studio",
+                    ],
+                    stdout=stdout,
+                    stderr=stderr,
+                )
+
+        self.assertEqual(exit_code, ExitCode.SUCCESS)
+        self.assertEqual(json.loads(stdout.getvalue()), {"models": []})
+        self.assertEqual(stderr.getvalue(), "")
+        request = open_url.call_args.args[0]
+        self.assertEqual(
+            request.full_url,
+            "http://lm-studio.test:4321/v1/models",
+        )
+        self.assertEqual(open_url.call_args.kwargs["timeout"], 1.25)
+
     def test_module_entry_point_runs(self) -> None:
         root = Path(__file__).resolve().parents[1]
         environment = os.environ.copy()
@@ -160,6 +217,8 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(completed.returncode, ExitCode.SUCCESS)
         self.assertIn("--ollama-base-url", completed.stdout)
+        self.assertIn("--lm-studio-base-url", completed.stdout)
+        self.assertIn("--lm-studio-model-root", completed.stdout)
         self.assertEqual(completed.stderr, "")
 
 
