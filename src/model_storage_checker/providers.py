@@ -58,6 +58,12 @@ class ProviderRegistry:
             self._providers[name].status() for name in sorted(self._providers)
         )
 
+    @property
+    def names(self) -> tuple[str, ...]:
+        """Return registered provider names in stable order."""
+
+        return tuple(sorted(self._providers))
+
     def list_models(
         self, provider_name: str
     ) -> OperationResult[tuple[ModelRecord, ...]]:

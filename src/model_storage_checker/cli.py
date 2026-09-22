@@ -25,6 +25,7 @@ from .lm_studio import (
 from .models import ModelRecord
 from .ollama import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, OllamaProvider
 from .providers import ProviderRegistry, ProviderStatus
+from .reporting import StorageReport, build_report, human_size
 
 
 class ExitCode(IntEnum):
@@ -42,6 +43,18 @@ def _positive_timeout(value: str) -> float:
     if not math.isfinite(timeout) or timeout <= 0:
         raise argparse.ArgumentTypeError("timeout must be positive")
     return timeout
+
+
+def _nonnegative_size(value: str) -> int:
+    try:
+        size = int(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(
+            "minimum size must be an integer number of bytes"
+        ) from error
+    if size < 0:
+        raise argparse.ArgumentTypeError("minimum size must not be negative")
+    return size
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -128,6 +141,41 @@ def build_parser() -> argparse.ArgumentParser:
     list_parser.add_argument(
         "--provider", required=True, help="registered provider name"
     )
+    report_parser = subparsers.add_parser(
+        "report",
+        help="inventory providers and summarize storage and cleanup candidates",
+    )
+    report_parser.add_argument(
+        "--provider",
+        action="append",
+        dest="providers",
+        metavar="NAME",
+        help="include a provider; repeat to include multiple (default: all)",
+    )
+    report_parser.add_argument(
+        "--resource",
+        action="append",
+        dest="resources",
+        metavar="TYPE",
+        help="include a resource type; repeat for multiple types",
+    )
+    report_parser.add_argument(
+        "--min-size",
+        default=0,
+        type=_nonnegative_size,
+        metavar="BYTES",
+        help="include records at least this many bytes (default: 0)",
+    )
+    report_parser.add_argument(
+        "--largest-first",
+        action="store_true",
+        help="sort records by descending size",
+    )
+    report_parser.add_argument(
+        "--candidates-only",
+        action="store_true",
+        help="include only records flagged for manual cleanup review",
+    )
     return parser
 
 
@@ -181,6 +229,61 @@ def _write_models(
         print(f"{model.provider}: {model.name} [{model.identifier}]{size}", file=stream)
 
 
+def _write_report(
+    report: StorageReport, output: str, stream: TextIO
+) -> None:
+    if output == "json":
+        _write_json(report.to_dict(), stream)
+        return
+
+    summary = report.summary
+    print(
+        "Storage summary: "
+        f"{summary['item_count']} items, "
+        f"{summary['total_size']} ({summary['total_bytes']} bytes), "
+        f"{summary['cleanup_candidate_count']} cleanup candidates",
+        file=stream,
+    )
+    groups = summary["groups"]
+    if not groups:
+        print("No records matched the selected filters.", file=stream)
+    for group in groups:
+        print(
+            f"{group['provider']} / {group['resource_type']}: "
+            f"{group['item_count']} items, {group['total_size']} "
+            f"({group['total_bytes']} bytes), "
+            f"{group['cleanup_candidate_count']} candidates",
+            file=stream,
+        )
+        for item in group["largest_items"]:
+            print(
+                f"  largest: {item['name']} [{item['identifier']}] "
+                f"{item['size']} "
+                f"({item['size_bytes'] if item['size_bytes'] is not None else 'unknown'}"
+                " bytes)",
+                file=stream,
+            )
+    candidates = [record for record in report.records if record.cleanup.candidate]
+    if candidates:
+        print("Cleanup candidates (manual review required):", file=stream)
+        for record in candidates:
+            print(
+                f"  {record.record.provider}/{record.resource_type}: "
+                f"{record.record.name} ({human_size(record.record.size_bytes)})",
+                file=stream,
+            )
+            for reason in record.cleanup.reasons:
+                print(f"    - {reason}", file=stream)
+    for warning in report.warnings:
+        print(f"warning: {warning}", file=stream)
+    for error in report.errors:
+        provider = f" [{error.provider}]" if error.provider else ""
+        print(
+            f"error: {error.code.value}{provider}: {error.message}",
+            file=stream,
+        )
+
+
 def main(
     argv: Sequence[str] | None = None,
     *,
@@ -228,5 +331,24 @@ def main(
         assert result.value is not None
         _write_models(result.value, args.output, stdout)
         return ExitCode.SUCCESS
+
+    if args.command == "report":
+        report = build_report(
+            active_registry,
+            providers=args.providers,
+            resources=args.resources,
+            minimum_size=args.min_size,
+            largest_first=args.largest_first,
+            candidates_only=args.candidates_only,
+        )
+        _write_report(report, args.output, stdout)
+        if report.providers_succeeded:
+            return ExitCode.SUCCESS
+        if report.errors and all(
+            error.code.value == "provider_unavailable"
+            for error in report.errors
+        ):
+            return ExitCode.UNAVAILABLE
+        return ExitCode.FAILURE
 
     raise AssertionError(f"unhandled command: {args.command}")
