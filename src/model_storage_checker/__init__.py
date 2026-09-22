@@ -7,6 +7,7 @@ from .errors import (
     UnsupportedOperationError,
     UnsupportedProviderError,
 )
+from .lm_studio import LMStudioConfig, LMStudioProvider
 from .models import ModelRecord, Operation, ProviderResult, ProviderStatus
 from .ollama import OllamaConfig, OllamaProvider
 from .providers import Provider, ProviderRegistry
@@ -14,6 +15,8 @@ from .providers import Provider, ProviderRegistry
 __all__ = [
     "ModelRecord",
     "ModelStorageCheckerError",
+    "LMStudioConfig",
+    "LMStudioProvider",
     "Operation",
     "OllamaConfig",
     "OllamaProvider",

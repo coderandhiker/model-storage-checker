@@ -34,6 +34,10 @@ class SuccessfulOllamaProvider(SuccessfulProvider):
     name = "ollama"
 
 
+class SuccessfulLMStudioProvider(SuccessfulProvider):
+    name = "lm-studio"
+
+
 class UnavailableProvider:
     name = "offline"
 
@@ -163,6 +167,43 @@ class CliTests(unittest.TestCase):
         create_registry.assert_called_once_with(
             ollama_base_url="http://localhost:9999",
             ollama_timeout=1.25,
+            lm_studio_base_url="http://127.0.0.1:1234/v1",
+            lm_studio_timeout=5.0,
+            lm_studio_model_roots=None,
+        )
+
+    def test_lm_studio_options_configure_default_registry(self) -> None:
+        configured_registry = ProviderRegistry((SuccessfulLMStudioProvider(),))
+        stream = io.StringIO()
+
+        with patch(
+            "model_storage_checker.cli.create_default_registry",
+            return_value=configured_registry,
+        ) as create_registry:
+            exit_code = main(
+                [
+                    "list",
+                    "--provider",
+                    "lm-studio",
+                    "--lm-studio-base-url",
+                    "http://localhost:9999/v1/",
+                    "--lm-studio-timeout",
+                    "2.5",
+                    "--lm-studio-model-root",
+                    "/models/one",
+                    "--lm-studio-model-root",
+                    "/models/two",
+                ],
+                stdout=stream,
+            )
+
+        self.assertEqual(exit_code, 0)
+        create_registry.assert_called_once_with(
+            ollama_base_url="http://127.0.0.1:11434",
+            ollama_timeout=5.0,
+            lm_studio_base_url="http://localhost:9999/v1",
+            lm_studio_timeout=2.5,
+            lm_studio_model_roots=("/models/one", "/models/two"),
         )
 
 

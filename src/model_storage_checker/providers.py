@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from pathlib import Path
 from typing import Protocol, runtime_checkable
 
 from .errors import UnsupportedProviderError
+from .lm_studio import LMStudioConfig, LMStudioProvider
 from .models import Operation, ProviderResult
 from .ollama import OllamaConfig, OllamaProvider
 
@@ -55,15 +57,34 @@ def create_default_registry(
     *,
     ollama_base_url: str | None = None,
     ollama_timeout: float | None = None,
+    lm_studio_base_url: str | None = None,
+    lm_studio_timeout: float | None = None,
+    lm_studio_model_roots: tuple[str, ...] | None = None,
 ) -> ProviderRegistry:
-    defaults = OllamaConfig()
-    config = OllamaConfig(
-        base_url=ollama_base_url or defaults.base_url,
-        timeout=ollama_timeout if ollama_timeout is not None else defaults.timeout,
+    ollama_defaults = OllamaConfig()
+    ollama_config = OllamaConfig(
+        base_url=ollama_base_url or ollama_defaults.base_url,
+        timeout=(
+            ollama_timeout if ollama_timeout is not None else ollama_defaults.timeout
+        ),
+    )
+    lm_studio_defaults = LMStudioConfig()
+    lm_studio_config = LMStudioConfig(
+        base_url=lm_studio_base_url or lm_studio_defaults.base_url,
+        timeout=(
+            lm_studio_timeout
+            if lm_studio_timeout is not None
+            else lm_studio_defaults.timeout
+        ),
+        model_roots=(
+            tuple(Path(root) for root in lm_studio_model_roots)
+            if lm_studio_model_roots is not None
+            else lm_studio_defaults.model_roots
+        ),
     )
     return ProviderRegistry(
-        (OllamaProvider(config),),
-        unsupported_names=("docker", "lm-studio"),
+        (OllamaProvider(ollama_config), LMStudioProvider(lm_studio_config)),
+        unsupported_names=("docker",),
     )
 
 

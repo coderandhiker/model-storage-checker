@@ -15,6 +15,12 @@ from .errors import (
     UnsupportedOperationError,
     UnsupportedProviderError,
 )
+from .lm_studio import (
+    DEFAULT_BASE_URL as DEFAULT_LM_STUDIO_BASE_URL,
+    DEFAULT_MODEL_ROOTS,
+    DEFAULT_TIMEOUT as DEFAULT_LM_STUDIO_TIMEOUT,
+    LMStudioConfig,
+)
 from .models import Operation, ProviderResult, ProviderStatus
 from .ollama import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, OllamaConfig
 from .providers import DEFAULT_REGISTRY, ProviderRegistry, create_default_registry
@@ -40,6 +46,13 @@ def _positive_timeout(value: str) -> float:
 def _ollama_base_url(value: str) -> str:
     try:
         return OllamaConfig(base_url=value).base_url
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+
+
+def _lm_studio_base_url(value: str) -> str:
+    try:
+        return LMStudioConfig(base_url=value).base_url
     except ValueError as error:
         raise argparse.ArgumentTypeError(str(error)) from error
 
@@ -79,6 +92,35 @@ def build_parser(registry: ProviderRegistry = DEFAULT_REGISTRY) -> argparse.Argu
         type=_positive_timeout,
         metavar="SECONDS",
         help=f"Ollama request timeout in seconds (default: {DEFAULT_TIMEOUT:g})",
+    )
+    parser.add_argument(
+        "--lm-studio-base-url",
+        default=DEFAULT_LM_STUDIO_BASE_URL,
+        type=_lm_studio_base_url,
+        help=(
+            "LM Studio OpenAI-compatible base URL "
+            f"(default: {DEFAULT_LM_STUDIO_BASE_URL})"
+        ),
+    )
+    parser.add_argument(
+        "--lm-studio-timeout",
+        default=DEFAULT_LM_STUDIO_TIMEOUT,
+        type=_positive_timeout,
+        metavar="SECONDS",
+        help=(
+            "LM Studio request timeout in seconds "
+            f"(default: {DEFAULT_LM_STUDIO_TIMEOUT:g})"
+        ),
+    )
+    parser.add_argument(
+        "--lm-studio-model-root",
+        action="append",
+        dest="lm_studio_model_roots",
+        metavar="PATH",
+        help=(
+            "LM Studio model root to scan recursively; repeat for multiple roots "
+            f"(default: {DEFAULT_MODEL_ROOTS[0]})"
+        ),
     )
     return parser
 
@@ -131,15 +173,18 @@ def _write_text(stream: TextIO, results: Sequence[ProviderResult]) -> None:
     for result in results:
         if result.status is ProviderStatus.OK:
             stream.write(f"{result.provider}: ok ({len(result.records)} models)\n")
-            for record in result.records:
-                size = (
-                    f"{record.size_bytes} bytes"
-                    if record.size_bytes is not None
-                    else "size unknown"
-                )
-                stream.write(f"  {record.model_id} ({size})\n")
         else:
-            stream.write(f"{result.provider}: {result.status.value} - {result.message}\n")
+            count = f" ({len(result.records)} models)" if result.records else ""
+            stream.write(
+                f"{result.provider}: {result.status.value}{count} - {result.message}\n"
+            )
+        for record in result.records:
+            size = (
+                f"{record.size_bytes} bytes"
+                if record.size_bytes is not None
+                else "size unknown"
+            )
+            stream.write(f"  {record.model_id} ({size})\n")
 
 
 def _exit_code(results: Sequence[ProviderResult]) -> int:
@@ -167,6 +212,13 @@ def main(
         active_registry = create_default_registry(
             ollama_base_url=args.ollama_base_url,
             ollama_timeout=args.ollama_timeout,
+            lm_studio_base_url=args.lm_studio_base_url,
+            lm_studio_timeout=args.lm_studio_timeout,
+            lm_studio_model_roots=(
+                tuple(args.lm_studio_model_roots)
+                if args.lm_studio_model_roots is not None
+                else None
+            ),
         )
     provider_names = (
         args.providers if args.providers is not None else active_registry.names

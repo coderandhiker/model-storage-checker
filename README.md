@@ -1,8 +1,8 @@
 # Model Storage Checker
 
 `model-storage-checker` is a Python 3.11+ command-line tool for reporting
-locally stored models. It discovers models from a local Ollama service and
-defines shared interfaces for additional providers.
+locally stored models. It discovers models from local Ollama and LM Studio
+services, as well as LM Studio model files on disk.
 
 ## Installation
 
@@ -52,6 +52,31 @@ model-storage-checker list --provider ollama \
 The base URL must be an absolute HTTP or HTTPS URL, and the timeout must be
 greater than zero.
 
+### LM Studio configuration
+
+LM Studio inventory combines the read-only OpenAI-compatible `GET /v1/models`
+endpoint with a recursive scan of model roots. The defaults are
+`http://127.0.0.1:1234/v1`, a five-second timeout, and
+`~/.lmstudio/models`:
+
+```console
+model-storage-checker list --provider lm-studio \
+  --lm-studio-base-url http://localhost:1234/v1 \
+  --lm-studio-timeout 10 \
+  --lm-studio-model-root ~/.lmstudio/models
+```
+
+Repeat `--lm-studio-model-root` to scan multiple roots. The scan recognizes
+GGUF, SafeTensors, BIN, MLX, ONNX, PT, and PTH model files. Each file reports
+its exact byte size, absolute path, configured root, relative path, and
+extension.
+
+API observations are deduplicated by exact model ID. An API model and a file
+are merged only when the API ID exactly equals the file's root-relative path
+without its final extension. If multiple matching files exist, each remains a
+separate record with its own size and location; API metadata is retained on
+each. This avoids merging models based on ambiguous file names.
+
 ## Output
 
 Human-readable text is the default:
@@ -76,9 +101,15 @@ An Ollama service that returns no models is a successful empty inventory.
 An unreachable service is reported as `unavailable`; invalid JSON or an
 invalid `/api/tags` response is reported as `error`.
 
+LM Studio API and filesystem discovery run independently. If one source fails,
+valid records from the other source remain in the result while the provider
+status and message identify whether API or filesystem discovery failed. An
+unreachable API is `unavailable`; malformed API responses and invalid,
+missing, or inaccessible model roots are `error`. Empty successful sources
+produce a successful empty inventory.
+
 ## Current provider scope
 
-Ollama inventory is supported. LM Studio and Docker are recognized names but
-are explicitly reported as unsupported. Discovery is read-only and intended
-for a local Ollama endpoint: no telemetry capture, model mutation, or container
-changes are performed.
+Ollama and LM Studio inventory are supported. Docker is a recognized name but
+is explicitly reported as unsupported. Discovery is read-only: no telemetry
+capture, model mutation, or container changes are performed.

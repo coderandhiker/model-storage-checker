@@ -64,8 +64,6 @@ class ProviderResult:
             raise ValueError("successful results must not contain an error message")
         if self.status is not ProviderStatus.OK and not self.message:
             raise ValueError("unsuccessful results must contain an error message")
-        if self.status is not ProviderStatus.OK and self.records:
-            raise ValueError("unsuccessful results must not contain records")
         if any(record.provider != self.provider for record in self.records):
             raise ValueError("record provider must match result provider")
 
@@ -88,10 +86,14 @@ class ProviderResult:
         operation: Operation,
         status: ProviderStatus,
         message: str,
+        records: tuple[ModelRecord, ...] = (),
     ) -> ProviderResult:
         if status is ProviderStatus.OK:
             raise ValueError("failure status must not be ok")
-        return cls(provider, operation, status, message=message)
+        ordered = tuple(
+            sorted(records, key=lambda record: (record.model_id, record.location or ""))
+        )
+        return cls(provider, operation, status, ordered, message)
 
     def to_dict(self) -> dict[str, object]:
         return {
