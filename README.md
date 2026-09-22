@@ -113,7 +113,31 @@ model-storage-checker list --output json
 ```
 
 JSON object keys, provider results, records, and record attributes have stable
-ordering. The schema includes a version, operation, and provider results.
+ordering. The schema includes a version, operation, original provider results,
+a storage summary, and advisory cleanup candidates. Provider errors and any
+partial records remain visible in both output formats.
+
+The storage summary reports record counts and sizes across all providers,
+grouped by provider and resource type (`model`, Docker `image`, or Docker
+`container`). A complete `total_size_bytes` is `null` whenever any contributing
+record has an unknown size; `known_size_bytes` and `unknown_size_count` show
+the available evidence without treating unknown values as zero. Docker image
+and container sizes are provider-reported values and may overlap, so the
+summary is not a claim about uniquely reclaimable disk space.
+
+### Cleanup candidates
+
+Cleanup candidates are **advisory only**. The checker never deletes models,
+prunes images, removes or stops containers, or performs any other mutation.
+Every candidate includes its rule, reported metadata evidence, and an explicit
+`heuristic` classification. The conservative rules currently surface only:
+
+- Docker images whose repository and tag are both reported as `<none>`.
+- Docker containers whose state is reported as `exited` or `dead`.
+
+These facts can make a resource worth reviewing, but do not prove that it is
+unused or safe to remove. Running containers, tagged images, and model records
+are not candidates. Incomplete metadata does not produce a candidate.
 
 The command exits with status `0` when every selected provider succeeds, `3`
 when any selected provider is unavailable, and `4` when any selected provider

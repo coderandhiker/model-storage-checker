@@ -25,6 +25,7 @@ from .lm_studio import (
 from .models import Operation, ProviderResult, ProviderStatus
 from .ollama import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, OllamaConfig
 from .providers import DEFAULT_REGISTRY, ProviderRegistry, create_default_registry
+from .reporting import StorageTotal, build_summary, find_cleanup_candidates
 
 EXIT_ERROR = 1
 EXIT_USAGE = 2
@@ -176,16 +177,25 @@ def collect_results(
 def _write_json(
     stream: TextIO, operation: Operation, results: Sequence[ProviderResult]
 ) -> None:
+    summary = build_summary(results)
+    candidates = find_cleanup_candidates(results)
     payload = {
+        "cleanup_candidates": [candidate.to_dict() for candidate in candidates],
         "operation": operation.value,
         "providers": [result.to_dict() for result in results],
-        "version": 1,
+        "storage_summary": summary.to_dict(),
+        "version": 2,
     }
     json.dump(payload, stream, ensure_ascii=True, indent=2, sort_keys=True)
     stream.write("\n")
 
 
-def _write_text(stream: TextIO, results: Sequence[ProviderResult]) -> None:
+def _write_text(
+    stream: TextIO,
+    results: Sequence[ProviderResult],
+    *,
+    include_unified_summary: bool,
+) -> None:
     for result in results:
         if result.status is ProviderStatus.OK:
             noun = "inventory records" if result.provider == "docker" else "models"
@@ -203,6 +213,48 @@ def _write_text(stream: TextIO, results: Sequence[ProviderResult]) -> None:
                 else "size unknown"
             )
             stream.write(f"  {record.model_id} ({size})\n")
+
+    if not include_unified_summary:
+        return
+
+    summary = build_summary(results)
+    stream.write("storage summary:\n")
+    stream.write(f"  all: {_format_total(summary.total)}\n")
+    for provider, total in summary.by_provider.items():
+        stream.write(f"  provider {provider}: {_format_total(total)}\n")
+        for resource_type, resource_total in (
+            summary.by_provider_and_resource_type[provider].items()
+        ):
+            stream.write(
+                f"    {resource_type}: {_format_total(resource_total)}\n"
+            )
+
+    candidates = find_cleanup_candidates(results)
+    stream.write(f"cleanup candidates (advisory only): {len(candidates)}\n")
+    for candidate in candidates:
+        evidence = ", ".join(
+            f"{key}={value}" for key, value in candidate.evidence.items()
+        )
+        stream.write(
+            f"  {candidate.provider}/{candidate.resource_type}/"
+            f"{candidate.record_id}: heuristic {candidate.rule}\n"
+            f"    evidence (reported metadata): {evidence}\n"
+            f"    advisory: {candidate.rationale}\n"
+        )
+
+
+def _format_total(total: StorageTotal) -> str:
+    known_size_bytes = total.known_size_bytes
+    unknown_size_count = total.unknown_size_count
+    record_count = total.record_count
+    if unknown_size_count:
+        size = (
+            f"{known_size_bytes} known bytes; "
+            f"{unknown_size_count} record(s) have unknown size"
+        )
+    else:
+        size = f"{known_size_bytes} bytes"
+    return f"{record_count} record(s), {size}"
 
 
 def _exit_code(results: Sequence[ProviderResult]) -> int:
@@ -248,5 +300,11 @@ def main(
     if args.output == "json":
         _write_json(stream, operation, results)
     else:
-        _write_text(stream, results)
+        _write_text(
+            stream,
+            results,
+            include_unified_summary=(
+                args.providers is None and len(results) > 1
+            ),
+        )
     return _exit_code(results)

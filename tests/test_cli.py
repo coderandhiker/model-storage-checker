@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import patch
 
 from model_storage_checker.cli import (
+    EXIT_ERROR,
     EXIT_UNAVAILABLE,
     EXIT_UNSUPPORTED,
     main,
@@ -12,7 +13,12 @@ from model_storage_checker.errors import (
     ProviderUnavailableError,
     UnsupportedOperationError,
 )
-from model_storage_checker.models import ModelRecord, Operation, ProviderResult
+from model_storage_checker.models import (
+    ModelRecord,
+    Operation,
+    ProviderResult,
+    ProviderStatus,
+)
 from model_storage_checker.providers import ProviderRegistry
 
 
@@ -56,6 +62,19 @@ class WrongOperationProvider:
         raise UnsupportedOperationError(self.name, operation.value)
 
 
+class PartialProvider:
+    name = "partial"
+
+    def run(self, operation: Operation) -> ProviderResult:
+        return ProviderResult.failure(
+            self.name,
+            operation,
+            ProviderStatus.ERROR,
+            "one discovery source failed",
+            (ModelRecord(self.name, "retained", 12),),
+        )
+
+
 class CliTests(unittest.TestCase):
     def test_default_text_reports_unsupported_providers(self) -> None:
         registry = ProviderRegistry(
@@ -70,7 +89,13 @@ class CliTests(unittest.TestCase):
             stream.getvalue(),
             "docker: unsupported - Provider 'docker' is not supported\n"
             "lm-studio: unsupported - Provider 'lm-studio' is not supported\n"
-            "ollama: unsupported - Provider 'ollama' is not supported\n",
+            "ollama: unsupported - Provider 'ollama' is not supported\n"
+            "storage summary:\n"
+            "  all: 0 record(s), 0 bytes\n"
+            "  provider docker: 0 record(s), 0 bytes\n"
+            "  provider lm-studio: 0 record(s), 0 bytes\n"
+            "  provider ollama: 0 record(s), 0 bytes\n"
+            "cleanup candidates (advisory only): 0\n",
         )
 
     def test_json_is_deterministic(self) -> None:
@@ -103,6 +128,14 @@ class CliTests(unittest.TestCase):
             [record["model_id"] for record in payload["providers"][1]["records"]],
             ["a", "z"],
         )
+        self.assertEqual(payload["version"], 2)
+        self.assertIsNone(
+            payload["storage_summary"]["total"]["total_size_bytes"]
+        )
+        self.assertEqual(
+            payload["storage_summary"]["total"]["known_size_bytes"], 20
+        )
+        self.assertEqual(payload["cleanup_candidates"], [])
 
     def test_unavailable_provider_has_explicit_status_and_exit_code(self) -> None:
         registry = ProviderRegistry((UnavailableProvider(),))
@@ -115,6 +148,27 @@ class CliTests(unittest.TestCase):
         self.assertEqual(exit_code, EXIT_UNAVAILABLE)
         self.assertEqual(
             json.loads(stream.getvalue())["providers"][0]["status"], "unavailable"
+        )
+
+    def test_json_preserves_partial_failure_and_records(self) -> None:
+        registry = ProviderRegistry((PartialProvider(),))
+        stream = io.StringIO()
+
+        exit_code = main(
+            ["list", "--output", "json"], registry=registry, stdout=stream
+        )
+
+        payload = json.loads(stream.getvalue())
+        self.assertEqual(exit_code, EXIT_ERROR)
+        self.assertEqual(payload["providers"][0]["status"], "error")
+        self.assertEqual(
+            payload["providers"][0]["message"], "one discovery source failed"
+        )
+        self.assertEqual(
+            payload["providers"][0]["records"][0]["model_id"], "retained"
+        )
+        self.assertEqual(
+            payload["storage_summary"]["total"]["total_size_bytes"], 12
         )
 
     def test_unsupported_operation_from_provider_is_reported(self) -> None:
