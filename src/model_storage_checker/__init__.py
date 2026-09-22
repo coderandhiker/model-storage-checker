@@ -2,6 +2,7 @@
 
 from .errors import CheckerError, ErrorCode
 from .models import ModelRecord
+from .ollama import OllamaProvider
 from .providers import ModelProvider, ProviderRegistry, ProviderStatus
 from .results import OperationResult
 
@@ -10,6 +11,7 @@ __all__ = [
     "ErrorCode",
     "ModelProvider",
     "ModelRecord",
+    "OllamaProvider",
     "OperationResult",
     "ProviderRegistry",
     "ProviderStatus",

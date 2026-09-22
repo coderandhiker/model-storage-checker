@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from enum import IntEnum
 from typing import Sequence, TextIO
@@ -11,6 +12,7 @@ from typing import Sequence, TextIO
 from . import __version__
 from .errors import CheckerError
 from .models import ModelRecord
+from .ollama import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, OllamaProvider
 from .providers import ProviderRegistry, ProviderStatus
 
 
@@ -19,6 +21,16 @@ class ExitCode(IntEnum):
     FAILURE = 1
     USAGE = 2
     UNAVAILABLE = 3
+
+
+def _positive_timeout(value: str) -> float:
+    try:
+        timeout = float(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("timeout must be a number") from error
+    if not math.isfinite(timeout) or timeout <= 0:
+        raise argparse.ArgumentTypeError("timeout must be positive")
+    return timeout
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -34,6 +46,18 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("text", "json"),
         default="text",
         help="select output format (default: text)",
+    )
+    parser.add_argument(
+        "--ollama-base-url",
+        default=DEFAULT_BASE_URL,
+        help=f"Ollama API base URL (default: {DEFAULT_BASE_URL})",
+    )
+    parser.add_argument(
+        "--ollama-timeout",
+        default=DEFAULT_TIMEOUT,
+        type=_positive_timeout,
+        metavar="SECONDS",
+        help=f"Ollama request timeout (default: {DEFAULT_TIMEOUT:g} seconds)",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -107,7 +131,18 @@ def main(
     registry: ProviderRegistry | None = None,
 ) -> int:
     args = build_parser().parse_args(argv)
-    active_registry = registry if registry is not None else ProviderRegistry()
+    active_registry = (
+        registry
+        if registry is not None
+        else ProviderRegistry(
+            (
+                OllamaProvider(
+                    base_url=args.ollama_base_url,
+                    timeout=args.ollama_timeout,
+                ),
+            )
+        )
+    )
 
     if args.command == "providers":
         _write_statuses(active_registry.statuses(), args.output, stdout)

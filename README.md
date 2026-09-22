@@ -1,9 +1,8 @@
 # Model Storage Checker
 
-Model Storage Checker is a dependency-free Python foundation for inspecting
-locally stored model files. This first layer defines the typed data model,
-provider and result contracts, and command-line interface; it does not yet
-connect to any model provider.
+Model Storage Checker is a dependency-free Python tool for inspecting locally
+stored model files. It includes an Ollama inventory provider using Ollama's
+local HTTP API.
 
 Requires Python 3.11 or newer.
 
@@ -14,19 +13,26 @@ model-storage-checker --help
 model-storage-checker --output text providers
 model-storage-checker --output json providers
 model-storage-checker --output json list --provider ollama
+model-storage-checker --ollama-base-url http://localhost:11434 --ollama-timeout 3 list --provider ollama
 python -m model_storage_checker --output text providers
 ```
 
 `providers` reports the providers registered in the current build. `list`
-requests model records from a named provider. Because this layer registers no
-providers, `list` currently exits with a clear `provider_unavailable` error.
-Both commands support `text` and machine-readable `json` output.
+requests model records from a named provider. Both commands support `text` and
+machine-readable `json` output.
 
-## Planned providers
+## Ollama
 
-Later layers are expected to add provider implementations for Ollama, LM
-Studio, and Docker-backed model storage. These integrations are planned only
-and are not included in the current package.
+The Ollama provider requests `GET /api/tags` from
+`http://127.0.0.1:11434` by default. Use `--ollama-base-url` to target another
+Ollama endpoint and `--ollama-timeout` to change the short request timeout.
+The inventory includes each model's name, digest (as its identifier), size,
+modified time, and Ollama details when present.
+
+An unreachable Ollama service produces a `provider_unavailable` error. A
+reachable service with an invalid response produces a `provider_error`. A
+valid response with no models succeeds and prints `No models found.` (or
+`{"models": []}` with JSON output).
 
 ## Tests
 
