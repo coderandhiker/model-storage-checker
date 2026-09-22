@@ -1,189 +1,353 @@
-# Model Storage Checker
+# End-to-End Copilot Traceability with OpenTelemetry
 
-## Copilot prompt-to-PR telemetry
+This `OTEL` branch is a reference implementation for capturing and publishing
+evidence that connects an original prompt to the code and pull requests it
+produced:
 
-The `OTEL` branch is the customer-facing evidence view for this proof of
-concept. It prioritizes traceability over the sample application itself:
+> prompt → orchestrator → delegated sessions → process attempts → OTel traces
+> → model/tool activity → commits → pull requests → merge into `main`
 
-- [interactive lineage dashboard](docs/lineage/README.md), showing the origin
-  prompt, parent orchestrator, delegated sessions, process attempts, OTel
-  traces, model/tool activity, commits, branches, and merged pull requests;
-- [sanitized OTel evidence](telemetry/run-2/README.md), including exact public
-  prompts and preserved tool-call arguments/results;
-- [redaction ledger](telemetry/run-2/redaction-report.json), validation
-  summaries, artifact hashes, and the curated evidence workbook.
+The sample application in this repository is incidental. It exists because a
+real code change was needed to produce realistic evidence. Its implementation
+and usage documentation has moved to [`readme-app.md`](readme-app.md).
 
-To view the dashboard after cloning the branch:
+## What this evidence lets you answer
+
+| Question | Evidence |
+|---|---|
+| What did the human ask for? | Exact explicit prompt files under `telemetry/run-2/prompts/` |
+| Which Copilot session handled it? | Stable session IDs in the manifest, driver audit, and OTel resource attributes |
+| Which work was delegated? | Parent/child session IDs, layer metadata, and exact delegation prompts |
+| How many attempts or resumes occurred? | One OTel file plus host audit events for each process attempt |
+| Which models and tools were used? | Sanitized OTel spans preserving model activity and actual tool calls, arguments, results, errors, IDs, and timing |
+| What code was produced? | Git commits, trees, subjects, and Copilot/session trailers |
+| Which PR published each change? | Branch, base branch, PR URL/number, and verified head SHA |
+| Did the complete stack reach `main`? | Merged PR state plus verification that every feature head is an ancestor of the final `main` SHA |
+| Was confidential runtime context removed? | Structural redaction ledger, secret scan, validation summary, and artifact integrity manifest |
+
+## Explore this captured run
+
+The fastest way to understand the result is the offline lineage dashboard:
 
 ```console
+git switch OTEL
 python3 -m http.server --directory docs/lineage 8000
 ```
 
-Then open <http://127.0.0.1:8000/>. Raw captures, hidden system/developer
-instructions, tool schemas, credentials, and the private trace workbook are
-intentionally excluded.
+Open <http://127.0.0.1:8000/>.
 
-`model-storage-checker` is a Python 3.11+ command-line tool for reporting
-locally stored models and related runtime storage. It discovers models from
-local Ollama and LM Studio services, LM Studio model files on disk, and Docker
-images and containers.
+The graph starts with aggregate nodes so it remains readable. Select a node for
+provenance and details; expand trace, model, or tool groups only when needed.
+The primary path links the original prompt to the parent orchestrator, five
+logical child sessions, ten process attempts, captured traces, feature commits,
+merged PRs #6–#10, and the customer-facing `OTEL` branch.
 
-## Installation
+Key artifacts:
 
-Install from the repository with Python 3.11 or newer:
+- [`docs/lineage/index.html`](docs/lineage/index.html): offline interactive
+  dashboard;
+- [`docs/lineage/data.json`](docs/lineage/data.json): normalized graph and
+  master-detail data;
+- [`telemetry/run-2/manifest.json`](telemetry/run-2/manifest.json): normalized
+  session, capture, Git, test, branch, and PR lineage;
+- [`telemetry/run-2/otel/`](telemetry/run-2/otel/): sanitized OTel JSONL, one
+  file per process attempt;
+- [`telemetry/run-2/prompts/`](telemetry/run-2/prompts/): exact explicit parent
+  and delegation prompts;
+- [`telemetry/run-2/driver-audit.jsonl`](telemetry/run-2/driver-audit.jsonl):
+  host-observed process and session lifecycle;
+- [`telemetry/run-2/publication-metadata.json`](telemetry/run-2/publication-metadata.json):
+  approved PR metadata tied to verified commit SHAs;
+- [`telemetry/run-2/redaction-report.json`](telemetry/run-2/redaction-report.json):
+  every structural redaction with category, JSON path, replacement marker, and
+  SHA-256 of the removed value;
+- [`telemetry/run-2/artifact-integrity.json`](telemetry/run-2/artifact-integrity.json):
+  SHA-256, byte size, and line counts for the published evidence;
+- [`telemetry/run-2/README.md`](telemetry/run-2/README.md): detailed notes for
+  this specific captured run.
 
-```console
-python -m pip install .
+## Correlation contract
+
+End-to-end traceability depends on carrying a small set of identifiers through
+every stage. Choose names appropriate for your environment, but keep the
+relationships stable.
+
+| Identifier | Purpose |
+|---|---|
+| `run_id` | Groups all evidence from one end-to-end request |
+| `session_id` | Identifies one logical Copilot session |
+| `parent_session_id` | Connects delegated work to its logical parent |
+| `invocation` | Distinguishes initial, retry, and resume process attempts |
+| `role` | Labels orchestrator, delegated worker, reviewer, or other roles |
+| `layer` | Orders dependent branches/PRs when work is stacked |
+| `trace_id` / `span_id` | Connects model and tool activity inside an OTel capture |
+| `commit_sha` | Connects a completed session to immutable Git evidence |
+| `head_sha` | Proves a PR published the expected commit |
+| `merge_sha` | Proves the approved PR stack reached its final branch |
+
+The critical joins are:
+
+1. exact prompt file → `session_id`;
+2. child `parent_session_id` → parent `session_id`;
+3. process attempt → OTel file through `session_id` + `invocation`;
+4. model/tool spans → process attempt through OTel resource attributes;
+5. session → commit through a commit trailer and recorded `commit_sha`;
+6. commit → PR through branch name and exact `head_sha`;
+7. PR → final merge through merged state and ancestry from each `head_sha` to
+   the final `main` SHA.
+
+## Set this up in your own repository
+
+### 1. Establish a private/public boundary first
+
+Full-content telemetry can contain prompts, assistant responses, source code,
+commands, file paths, and tool arguments/results. Keep raw capture material
+outside the publishable tree.
+
+One practical layout is:
+
+```text
+your-repository/
+├── .copilot-lineage-tools/   # ignored local helper clone
+├── .lineage-private/         # ignored raw prompts, OTel, stdout, audits
+├── telemetry/run-N/          # sanitized publishable evidence
+└── docs/lineage/             # publishable dashboard and local assets
 ```
 
-For editable development installs:
+Add the private paths to `.gitignore` before the first capture:
 
-```console
-python -m pip install -e .
+```gitignore
+/.copilot-lineage-tools/
+/.lineage-private/
+github_copilot_traces.xlsx
 ```
 
-The runtime package uses only the Python standard library.
+An ignored helper remains available to the agent when referenced explicitly;
+it is merely excluded from normal Git tracking and many default searches.
 
-## Invocation
+### 2. Assign IDs before launching Copilot
 
-Run the installed command or the package module:
+Generate a stable `run_id` for the complete workflow and a stable `session_id`
+for each logical parent or delegated session. Generate a distinct `invocation`
+name for each initial, retry, or resume process.
 
-```console
-model-storage-checker list
-python -m model_storage_checker list --provider ollama
+The host that launches Copilot should know:
+
+```text
+run_id
+session_id
+parent_session_id
+role
+layer
+invocation
+branch
+base_branch
 ```
 
-`list` is currently the only operation. Providers can be selected repeatedly:
+Do not derive these relationships later from timestamps or process IDs.
+Explicit correlation fields are deterministic and reviewable.
 
-```console
-model-storage-checker list --provider ollama --provider docker
+### 3. Save exact explicit prompts
+
+Before launching each process, write the exact human or delegation prompt to
+the private run directory:
+
+```text
+.lineage-private/run-N/prompts/orchestrator.md
+.lineage-private/run-N/prompts/layer-1.md
+.lineage-private/run-N/prompts/layer-2.md
 ```
 
-Without `--provider`, all known providers are reported in a stable order.
-Unknown provider names and unknown operations are rejected by `argparse`.
+These are explicit user/delegation prompts, not hidden system or developer
+instructions. Secret-scan each prompt before copying it into the publishable
+package. Preserve its exact bytes and record its SHA-256.
 
-### Ollama configuration
+### 4. Capture one OTel stream per process attempt
 
-Ollama inventory uses the read-only `GET /api/tags` endpoint. By default the
-checker connects to `http://127.0.0.1:11434` with a five-second timeout:
-
-```console
-model-storage-checker list --provider ollama \
-  --ollama-base-url http://localhost:11434 \
-  --ollama-timeout 10
-```
-
-The base URL must be an absolute HTTP or HTTPS URL, and the timeout must be
-greater than zero.
-
-### LM Studio configuration
-
-LM Studio inventory combines the read-only OpenAI-compatible `GET /v1/models`
-endpoint with a recursive scan of model roots. The defaults are
-`http://127.0.0.1:1234/v1`, a five-second timeout, and
-`~/.lmstudio/models`:
+Set the capture environment independently for every Copilot invocation:
 
 ```console
-model-storage-checker list --provider lm-studio \
-  --lm-studio-base-url http://localhost:1234/v1 \
-  --lm-studio-timeout 10 \
-  --lm-studio-model-root ~/.lmstudio/models
+export PRIVATE_RUN="$PWD/.lineage-private/run-N"
+export COPILOT_AGENT_SESSION_ID="$SESSION_ID"
+export OTEL_SERVICE_NAME=github-copilot
+export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true
+export COPILOT_OTEL_FILE_EXPORTER_PATH="$PRIVATE_RUN/raw/$INVOCATION.jsonl"
+export OTEL_RESOURCE_ATTRIBUTES="lineage.run_id=$RUN_ID,lineage.session_id=$SESSION_ID,lineage.parent_session_id=$PARENT_SESSION_ID,lineage.role=$ROLE,lineage.layer=$LAYER,lineage.invocation=$INVOCATION"
+
+copilot --output-format=json --no-remote-export --no-auto-update
 ```
 
-Repeat `--lm-studio-model-root` to scan multiple roots. The scan recognizes
-GGUF, SafeTensors, BIN, MLX, ONNX, PT, and PTH model files. Each file reports
-its exact byte size, absolute path, configured root, relative path, and
-extension.
+The important settings are:
 
-API observations are deduplicated by exact model ID. An API model and a file
-are merged only when the API ID exactly equals the file's root-relative path
-without its final extension. If multiple matching files exist, each remains a
-separate record with its own size and location; API metadata is retained on
-each. This avoids merging models based on ambiguous file names.
+- `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true` captures exact
+  message and tool-call content. Treat the resulting files as confidential.
+- `COPILOT_OTEL_FILE_EXPORTER_PATH` writes a local JSONL stream. Use a distinct
+  file for every process attempt.
+- `COPILOT_AGENT_SESSION_ID` gives the Copilot process a stable logical
+  identity.
+- `OTEL_RESOURCE_ATTRIBUTES` carries the parent/child and attempt correlation
+  contract into every record.
+- `--no-remote-export` keeps raw telemetry local.
+- `--no-auto-update` plus a pinned CLI version improves reproducibility.
 
-### Docker configuration
+Permissive execution flags such as `--allow-all-tools`, `--allow-all-paths`,
+or `--no-ask-user` are not required for telemetry fidelity. Do not copy them
+into a customer environment without a separate security decision.
 
-Docker inventory uses only the Docker CLI and performs two read-only queries:
-`docker image ls` for every image and `docker container ls --all` for every
-container, including stopped containers. Both commands request JSON template
-output. Image records include IDs, repository references, digests, creation
-details, and reported sizes. Container records include IDs, names, state,
-status, creation details, reported writable-layer sizes, and their image
-relationships. No Docker SDK or daemon mutation is used.
+### 5. Record the host-observed lifecycle
 
-Each Docker CLI query has a ten-second default timeout:
+OTel describes activity inside a process; a host audit connects separate
+processes and retries. Append JSONL records for events such as:
+
+```json
+{
+  "event": "process_started",
+  "run_id": "run-N",
+  "session_id": "child-session-id",
+  "parent_session_id": "parent-session-id",
+  "role": "delegated-worker",
+  "layer": 2,
+  "invocation": "layer-2-initial",
+  "prompt_path": "prompts/layer-2.md",
+  "telemetry_path": "raw/layer-2-initial.jsonl"
+}
+```
+
+Also record process completion, exit status, retry/resume decisions, branch,
+base branch, and the final commit SHA. Record secret environment variable names
+only—never their values.
+
+### 6. Carry session identity into Git
+
+When a logical session produces a commit, make the relationship explicit:
+
+```text
+feat: implement the requested layer
+
+Copilot-Session-Id: <session-id>
+Co-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>
+```
+
+Record the commit SHA, parent SHA, tree SHA, branch, base branch, and tests.
+For stacked work, verify that each layer's parent commit and PR base match the
+layer below it.
+
+### 7. Record PR and merge facts
+
+After publication approval, record only public GitHub metadata:
+
+```json
+{
+  "number": 123,
+  "url": "https://github.com/owner/repository/pull/123",
+  "state": "merged",
+  "draft": false,
+  "base": "parent-branch",
+  "head_sha": "0123456789abcdef0123456789abcdef01234567"
+}
+```
+
+Before declaring the lineage complete:
+
+1. require the PR's live head SHA to equal the recorded feature commit;
+2. record the bottom-to-top PR order;
+3. record the final merge operation and final `main` SHA;
+4. verify every feature `head_sha` is an ancestor of that final SHA.
+
+That last ancestry check connects the original prompt to code that actually
+landed, rather than merely to a branch or an open PR.
+
+### 8. Sanitize into a publishable derivative
+
+This branch includes a Python-standard-library reference toolchain:
 
 ```console
-model-storage-checker list --provider docker --docker-timeout 20
+python3 tools/lineage/sanitize_telemetry.py \
+  .lineage-private/run-N \
+  --output telemetry/run-N \
+  --repo-root . \
+  --package-branch OTEL
+
+python3 tools/lineage/build_dashboard.py \
+  --telemetry-root telemetry/run-N \
+  --output docs/lineage/data.json \
+  --repo-root .
 ```
 
-`--docker-ai-heuristic` optionally annotates every Docker record with a clearly
-marked heuristic classification. It does not filter the inventory; all images
-and containers remain present regardless of the label.
+Reuse the structural redaction, secret scanning, preservation hashing, JSONL
+handling, and integrity code. Adapt the manifest normalization and expected
+capture/layer counts to your own workflow; this captured run intentionally
+validates its known five-layer, ten-attempt shape.
 
-## Output
+The sanitizer must remove:
 
-Human-readable text is the default:
+- messages whose role is `system` or `developer`;
+- system/developer prompt attributes and events;
+- available tool/function definitions, schemas, catalogs, and descriptions;
+- sandbox and launcher policy payloads;
+- credentials, authorization headers, cookies, private keys, tokens, and
+  credential-bearing URLs.
 
-```console
-model-storage-checker list
-```
+It should preserve:
 
-For deterministic, machine-readable output, use JSON:
+- explicit user/delegation prompts;
+- assistant responses;
+- actual tool invocation names;
+- actual tool arguments, results, errors, IDs, and timing;
+- trace/span IDs and resource attributes;
+- source code and commands, subject to your publication policy.
 
-```console
-model-storage-checker list --output json
-```
+Record every redaction with category, count, JSON path/key, source file,
+replacement marker, and SHA-256 of the original value—never the original
+confidential value.
 
-JSON object keys, provider results, records, and record attributes have stable
-ordering. The schema includes a version, operation, original provider results,
-a storage summary, and advisory cleanup candidates. Provider errors and any
-partial records remain visible in both output formats.
+### 9. Validate before publishing
 
-The storage summary reports record counts and sizes across all providers,
-grouped by provider and resource type (`model`, Docker `image`, or Docker
-`container`). A complete `total_size_bytes` is `null` whenever any contributing
-record has an unknown size; `known_size_bytes` and `unknown_size_count` show
-the available evidence without treating unknown values as zero. Docker image
-and container sizes are provider-reported values and may overlap, so the
-summary is not a claim about uniquely reclaimable disk space.
+At minimum, automate these gates:
 
-### Cleanup candidates
+- parse every generated JSON and JSONL record;
+- prove no system/developer-role content or tool-definition/schema payload
+  remains;
+- compare aggregate hashes to prove allowed user/assistant/tool-call evidence
+  survived unchanged;
+- scan the complete prospective tracked tree for credentials;
+- verify every artifact-integrity hash, size, and line count;
+- enforce GitHub's per-file size limit;
+- verify prompt → session → attempt → trace → commit → PR → merge joins;
+- serve the dashboard over HTTP and test first render, path traversal, and
+  progressive expansion;
+- inspect the final Git diff for raw captures, transcripts, runtime packages,
+  or unrelated files.
 
-Cleanup candidates are **advisory only**. The checker never deletes models,
-prunes images, removes or stops containers, or performs any other mutation.
-Every candidate includes its rule, reported metadata evidence, and an explicit
-`heuristic` classification. The conservative rules currently surface only:
+Publish only after all gates pass.
 
-- Docker images whose repository and tag are both reported as `<none>`.
-- Docker containers whose state is reported as `exited` or `dead`.
+## Security and evidence boundaries
 
-These facts can make a resource worth reviewing, but do not prove that it is
-unused or safe to remove. Running containers, tagged images, and model records
-are not candidates. Incomplete metadata does not produce a candidate.
+| Keep private | Safe to publish after validation |
+|---|---|
+| Raw OTel captures | Structurally sanitized OTel JSONL |
+| Raw CLI stdout and transcripts | Exact explicit prompts that pass secret scanning |
+| Hidden system/developer instructions | Hash-addressed redaction markers |
+| Tool definitions and schemas | Actual tool calls, arguments, results, and errors |
+| Credentials and auth configuration | Public branch, commit, PR, and merge metadata |
+| Private trace workbooks | Curated workbook with structural safety validation |
+| Internal launcher/runtime details | Normalized host audit and manifest |
 
-The command exits with status `0` when every selected provider succeeds, `3`
-when any selected provider is unavailable, and `4` when any selected provider
-or operation is unsupported. Other provider failures exit with status `1`.
-An Ollama service that returns no models is a successful empty inventory.
-An unreachable service is reported as `unavailable`; invalid JSON or an
-invalid `/api/tags` response is reported as `error`.
+The correct boundary is semantic, not keyword-based. A user prompt containing
+the word “instructions” is not automatically confidential; a nested
+system-prompt field serialized inside a JSON string is.
 
-LM Studio API and filesystem discovery run independently. If one source fails,
-valid records from the other source remain in the result while the provider
-status and message identify whether API or filesystem discovery failed. An
-unreachable API is `unavailable`; malformed API responses and invalid,
-missing, or inaccessible model roots are `error`. Empty successful sources
-produce a successful empty inventory.
+## Known limitation
 
-Docker reports a missing CLI, unavailable daemon, permission denial, and
-timeout as distinct `unavailable` outcomes. A failed CLI query or malformed
-JSON/template record is an `error`. Successful commands with no images or
-containers produce a successful empty inventory. Docker discovery never
-removes, prunes, stops, restarts, creates, or otherwise changes resources.
+This proof of concept demonstrates **host-driven logical lineage**. Separate
+Copilot processes are connected through stable session IDs, parent IDs,
+invocation metadata, host audit records, and Git/GitHub evidence.
 
-## Current provider scope
+It does not claim:
 
-Ollama, LM Studio, and Docker inventory are supported. Discovery is read-only:
-no telemetry capture, model mutation, or Docker resource changes are
-performed.
+- operating-system parent/child process nesting;
+- W3C `traceparent` propagation between separate Copilot sessions;
+- that OTel alone proves PR or merge lineage without the Git/GitHub joins.
+
+Those limitations are explicit in the manifest and dashboard so the evidence
+does not overstate what was captured.
