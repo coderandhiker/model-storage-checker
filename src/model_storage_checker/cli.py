@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from collections.abc import Sequence
 from typing import TextIO
@@ -15,12 +16,32 @@ from .errors import (
     UnsupportedProviderError,
 )
 from .models import Operation, ProviderResult, ProviderStatus
-from .providers import DEFAULT_REGISTRY, ProviderRegistry
+from .ollama import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, OllamaConfig
+from .providers import DEFAULT_REGISTRY, ProviderRegistry, create_default_registry
 
 EXIT_ERROR = 1
 EXIT_USAGE = 2
 EXIT_UNAVAILABLE = 3
 EXIT_UNSUPPORTED = 4
+
+
+def _positive_timeout(value: str) -> float:
+    try:
+        timeout = float(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("must be a number") from error
+    if not math.isfinite(timeout) or timeout <= 0:
+        raise argparse.ArgumentTypeError(
+            "must be a finite number greater than zero"
+        )
+    return timeout
+
+
+def _ollama_base_url(value: str) -> str:
+    try:
+        return OllamaConfig(base_url=value).base_url
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
 
 
 def build_parser(registry: ProviderRegistry = DEFAULT_REGISTRY) -> argparse.ArgumentParser:
@@ -45,6 +66,19 @@ def build_parser(registry: ProviderRegistry = DEFAULT_REGISTRY) -> argparse.Argu
         choices=("text", "json"),
         default="text",
         help="output format (default: text)",
+    )
+    parser.add_argument(
+        "--ollama-base-url",
+        default=DEFAULT_BASE_URL,
+        type=_ollama_base_url,
+        help=f"Ollama service base URL (default: {DEFAULT_BASE_URL})",
+    )
+    parser.add_argument(
+        "--ollama-timeout",
+        default=DEFAULT_TIMEOUT,
+        type=_positive_timeout,
+        metavar="SECONDS",
+        help=f"Ollama request timeout in seconds (default: {DEFAULT_TIMEOUT:g})",
     )
     return parser
 
@@ -128,8 +162,16 @@ def main(
     args = build_parser(registry).parse_args(argv)
     stream = stdout if stdout is not None else sys.stdout
     operation = Operation(args.operation)
-    provider_names = args.providers if args.providers is not None else registry.names
-    results = collect_results(registry, provider_names, operation)
+    active_registry = registry
+    if registry is DEFAULT_REGISTRY:
+        active_registry = create_default_registry(
+            ollama_base_url=args.ollama_base_url,
+            ollama_timeout=args.ollama_timeout,
+        )
+    provider_names = (
+        args.providers if args.providers is not None else active_registry.names
+    )
+    results = collect_results(active_registry, provider_names, operation)
 
     if args.output == "json":
         _write_json(stream, operation, results)

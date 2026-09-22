@@ -1,6 +1,7 @@
 import io
 import json
 import unittest
+from unittest.mock import patch
 
 from model_storage_checker.cli import (
     EXIT_UNAVAILABLE,
@@ -29,6 +30,10 @@ class SuccessfulProvider:
         )
 
 
+class SuccessfulOllamaProvider(SuccessfulProvider):
+    name = "ollama"
+
+
 class UnavailableProvider:
     name = "offline"
 
@@ -45,9 +50,12 @@ class WrongOperationProvider:
 
 class CliTests(unittest.TestCase):
     def test_default_text_reports_unsupported_providers(self) -> None:
+        registry = ProviderRegistry(
+            unsupported_names=("docker", "lm-studio", "ollama")
+        )
         stream = io.StringIO()
 
-        exit_code = main(["list"], stdout=stream)
+        exit_code = main(["list"], registry=registry, stdout=stream)
 
         self.assertEqual(exit_code, EXIT_UNSUPPORTED)
         self.assertEqual(
@@ -116,6 +124,46 @@ class CliTests(unittest.TestCase):
                 with self.assertRaises(SystemExit) as context:
                     main(args)
                 self.assertEqual(context.exception.code, 2)
+
+    def test_argparse_rejects_non_positive_ollama_timeout(self) -> None:
+        for timeout in ("0", "-1", "nan", "inf", "not-a-number"):
+            with self.subTest(timeout=timeout):
+                with self.assertRaises(SystemExit) as context:
+                    main(["list", "--ollama-timeout", timeout])
+                self.assertEqual(context.exception.code, 2)
+
+    def test_argparse_rejects_invalid_ollama_base_url(self) -> None:
+        with self.assertRaises(SystemExit) as context:
+            main(["list", "--ollama-base-url", "file:///tmp/ollama"])
+
+        self.assertEqual(context.exception.code, 2)
+
+    def test_ollama_options_configure_default_registry(self) -> None:
+        configured_registry = ProviderRegistry((SuccessfulOllamaProvider(),))
+        stream = io.StringIO()
+
+        with patch(
+            "model_storage_checker.cli.create_default_registry",
+            return_value=configured_registry,
+        ) as create_registry:
+            exit_code = main(
+                [
+                    "list",
+                    "--provider",
+                    "ollama",
+                    "--ollama-base-url",
+                    "http://localhost:9999/",
+                    "--ollama-timeout",
+                    "1.25",
+                ],
+                stdout=stream,
+            )
+
+        self.assertEqual(exit_code, 0)
+        create_registry.assert_called_once_with(
+            ollama_base_url="http://localhost:9999",
+            ollama_timeout=1.25,
+        )
 
 
 if __name__ == "__main__":

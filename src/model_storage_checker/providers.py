@@ -7,6 +7,7 @@ from typing import Protocol, runtime_checkable
 
 from .errors import UnsupportedProviderError
 from .models import Operation, ProviderResult
+from .ollama import OllamaConfig, OllamaProvider
 
 
 @runtime_checkable
@@ -50,6 +51,20 @@ class ProviderRegistry:
         return provider.run(operation)
 
 
-DEFAULT_REGISTRY = ProviderRegistry(
-    unsupported_names=("docker", "lm-studio", "ollama")
-)
+def create_default_registry(
+    *,
+    ollama_base_url: str | None = None,
+    ollama_timeout: float | None = None,
+) -> ProviderRegistry:
+    defaults = OllamaConfig()
+    config = OllamaConfig(
+        base_url=ollama_base_url or defaults.base_url,
+        timeout=ollama_timeout if ollama_timeout is not None else defaults.timeout,
+    )
+    return ProviderRegistry(
+        (OllamaProvider(config),),
+        unsupported_names=("docker", "lm-studio"),
+    )
+
+
+DEFAULT_REGISTRY = create_default_registry()
