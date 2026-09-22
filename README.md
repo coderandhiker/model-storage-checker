@@ -1,5 +1,28 @@
 # Model Storage Checker
 
+## Copilot prompt-to-PR telemetry
+
+The `OTEL` branch is the customer-facing evidence view for this proof of
+concept. It prioritizes traceability over the sample application itself:
+
+- [interactive lineage dashboard](docs/lineage/README.md), showing the origin
+  prompt, parent orchestrator, delegated sessions, process attempts, OTel
+  traces, model/tool activity, commits, branches, and merged pull requests;
+- [sanitized OTel evidence](telemetry/run-2/README.md), including exact public
+  prompts and preserved tool-call arguments/results;
+- [redaction ledger](telemetry/run-2/redaction-report.json), validation
+  summaries, artifact hashes, and the curated evidence workbook.
+
+To view the dashboard after cloning the branch:
+
+```console
+python3 -m http.server --directory docs/lineage 8000
+```
+
+Then open <http://127.0.0.1:8000/>. Raw captures, hidden system/developer
+instructions, tool schemas, credentials, and the private trace workbook are
+intentionally excluded.
+
 `model-storage-checker` is a Python 3.11+ command-line tool for reporting
 locally stored models and related runtime storage. It discovers models from
 local Ollama and LM Studio services, LM Studio model files on disk, and Docker

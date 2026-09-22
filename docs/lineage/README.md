@@ -4,11 +4,15 @@ This dashboard visualizes the sanitized evidence in `telemetry/run-2/` as:
 
 > origin prompt → parent orchestrator → five logical child sessions → process
 > attempts → OTel traces → model/tool activity → commits → stacked branches
-> and live feature PRs → package PR/release placeholders
+> and merged feature PRs → OTEL branch → release placeholder
 
 The graph labels each evidence source as `captured in OTel`, `driver audit`,
 `Git commit/trailer`, or `planned/live GitHub metadata`. It also states the
 host-driven, non-W3C orchestration limitation in the interface.
+
+The feature PR nodes reflect the final merged state of #6 through #10. `OTEL`
+is the customer-facing evidence branch; no separate package PR or release is
+claimed.
 
 ## Companion workbook
 
@@ -20,7 +24,7 @@ worksheets: the first summary worksheet (currently named `Sheet1`), `Lineage`,
 The workbook is a simple local OOXML package: no macros, formulas, external
 links, hyperlinks, embedded objects, drawings, media, or unexpected
 relationships/package entries. Its SHA-256 is
-`8f92fc4226afdfa638383093afaa63aae06401a4289cb0853aaf4a03bd3a8f72`;
+`11c81dcba23eea8ce127cec28deddeea14c53a6aae43926a4f8f20fbd645d394`;
 the deterministic structural report is
 [`../../telemetry/run-2/validation/workbook-safety.json`](../../telemetry/run-2/validation/workbook-safety.json).
 It is distinct from any private raw trace workbook, which must remain outside

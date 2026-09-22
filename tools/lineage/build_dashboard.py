@@ -1018,6 +1018,14 @@ def build_dashboard(
             if isinstance(pull_request, dict) and pull_request.get("number")
             else "PR pending approval"
         )
+        pull_request_status = (
+            "merged"
+            if isinstance(pull_request, dict)
+            and pull_request.get("state") == "merged"
+            else "live"
+            if pull_request
+            else "placeholder"
+        )
         nodes.append(
             node(
                 pr_id,
@@ -1025,7 +1033,7 @@ def build_dashboard(
                 "pull-request",
                 layer=layer,
                 session_id=session_id,
-                status="live" if pull_request else "placeholder",
+                status=pull_request_status,
                 provenance=(PROVENANCE_GITHUB,),
                 summary=branch,
             )
@@ -1059,6 +1067,7 @@ def build_dashboard(
             )
 
     package_branch = manifest.get("package", {}).get("package_branch")
+    package_commit = manifest.get("package", {}).get("package_commit")
     package_branch_id: str | None = None
     package_pr_id: str | None = None
     if package_branch and package_branch not in {
@@ -1072,20 +1081,23 @@ def build_dashboard(
                 package_branch,
                 "branch",
                 layer=6,
-                status="working-tree",
+                status="published" if package_commit else "working-tree",
                 provenance=(PROVENANCE_GIT, PROVENANCE_GITHUB),
                 summary=(
-                    "Lineage evidence package; commit intentionally pending."
+                    "Customer-facing prompt-to-PR telemetry evidence."
+                    if package_commit
+                    else "Lineage evidence package; commit intentionally pending."
                 ),
             )
         )
         details[package_branch_id] = {
             "title": package_branch,
             "branch": package_branch,
-            "local_head": local_sha,
-            "package_commit": manifest.get("package", {}).get("package_commit"),
+            "package_commit": package_commit,
             "provenance": [PROVENANCE_GIT, PROVENANCE_GITHUB],
         }
+        if local_sha:
+            details[package_branch_id]["local_head"] = local_sha
         if commit_nodes:
             edges.append(
                 edge(
@@ -1100,6 +1112,14 @@ def build_dashboard(
             package_branch
         )
         package_pr_id = f"pr:{package_branch}"
+        package_pr_status = (
+            "merged"
+            if isinstance(package_pull_request, dict)
+            and package_pull_request.get("state") == "merged"
+            else "live"
+            if package_pull_request
+            else "placeholder"
+        )
         nodes.append(
             node(
                 package_pr_id,
@@ -1111,7 +1131,7 @@ def build_dashboard(
                 ),
                 "pull-request",
                 layer=6,
-                status="live" if package_pull_request else "placeholder",
+                status=package_pr_status,
                 provenance=(PROVENANCE_GITHUB,),
                 summary=package_branch,
             )
@@ -1203,7 +1223,7 @@ def build_dashboard(
                 "Host-driven logical parent/child linkage; no operating-system "
                 "process nesting is claimed.",
                 "No W3C traceparent propagation is claimed across sessions.",
-                "Feature pull request nodes use approved live metadata; the "
+                "Feature pull request nodes use approved GitHub metadata; the "
                 "package pull request and release remain placeholders until "
                 "publication is explicitly approved.",
             ],

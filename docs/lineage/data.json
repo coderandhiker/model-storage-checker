@@ -254,6 +254,15 @@
       "span_count": 15,
       "title": "process attempt 1"
     },
+    "branch:OTEL": {
+      "branch": "OTEL",
+      "package_commit": "02460aed650fe0384e327bfb04cfccc35652e1f7",
+      "provenance": [
+        "Git commit/trailer",
+        "planned/live GitHub metadata"
+      ],
+      "title": "OTEL"
+    },
     "branch:coderandhiker-v2-add-cleanup-reporting": {
       "branch": "coderandhiker-v2-add-cleanup-reporting",
       "expected_commit": "b7aa5e3c1815b605162f58898871cd8945cd7c63",
@@ -275,16 +284,6 @@
         "planned/live GitHub metadata"
       ],
       "title": "coderandhiker-v2-add-docker-inventory"
-    },
-    "branch:coderandhiker-v2-add-lineage-demo": {
-      "branch": "coderandhiker-v2-add-lineage-demo",
-      "local_head": "b7aa5e3c1815b605162f58898871cd8945cd7c63",
-      "package_commit": null,
-      "provenance": [
-        "Git commit/trailer",
-        "planned/live GitHub metadata"
-      ],
-      "title": "coderandhiker-v2-add-lineage-demo"
     },
     "branch:coderandhiker-v2-add-lm-studio-inventory": {
       "branch": "coderandhiker-v2-add-lm-studio-inventory",
@@ -22556,6 +22555,14 @@
       ],
       "title": "Origin prompt"
     },
+    "pr:OTEL": {
+      "branch": "OTEL",
+      "metadata": null,
+      "provenance": [
+        "planned/live GitHub metadata"
+      ],
+      "title": "Lineage package pull request"
+    },
     "pr:coderandhiker-v2-add-cleanup-reporting": {
       "branch": "coderandhiker-v2-add-cleanup-reporting",
       "metadata": {
@@ -22563,7 +22570,7 @@
         "draft": false,
         "head_sha": "b7aa5e3c1815b605162f58898871cd8945cd7c63",
         "number": 10,
-        "state": "open",
+        "state": "merged",
         "url": "https://github.com/coderandhiker/model-storage-checker/pull/10"
       },
       "provenance": [
@@ -22578,21 +22585,13 @@
         "draft": false,
         "head_sha": "c039b2abc8ad8b498f13104d2b7ffd3410939701",
         "number": 9,
-        "state": "open",
+        "state": "merged",
         "url": "https://github.com/coderandhiker/model-storage-checker/pull/9"
       },
       "provenance": [
         "planned/live GitHub metadata"
       ],
       "title": "PR #9"
-    },
-    "pr:coderandhiker-v2-add-lineage-demo": {
-      "branch": "coderandhiker-v2-add-lineage-demo",
-      "metadata": null,
-      "provenance": [
-        "planned/live GitHub metadata"
-      ],
-      "title": "Lineage package pull request"
     },
     "pr:coderandhiker-v2-add-lm-studio-inventory": {
       "branch": "coderandhiker-v2-add-lm-studio-inventory",
@@ -22601,7 +22600,7 @@
         "draft": false,
         "head_sha": "f78114c939a24c970d3c71a92185f47d92f6b61b",
         "number": 8,
-        "state": "open",
+        "state": "merged",
         "url": "https://github.com/coderandhiker/model-storage-checker/pull/8"
       },
       "provenance": [
@@ -22616,7 +22615,7 @@
         "draft": false,
         "head_sha": "f324548ef28cd2ba2f9ba058a6d22a3099efe03f",
         "number": 7,
-        "state": "open",
+        "state": "merged",
         "url": "https://github.com/coderandhiker/model-storage-checker/pull/7"
       },
       "provenance": [
@@ -22631,7 +22630,7 @@
         "draft": false,
         "head_sha": "526d4ef413a2760fa5ed1c010e2f577d757d2480",
         "number": 6,
-        "state": "open",
+        "state": "merged",
         "url": "https://github.com/coderandhiker/model-storage-checker/pull/6"
       },
       "provenance": [
@@ -36150,27 +36149,27 @@
       "target": "commit:b7aa5e3c1815b605162f58898871cd8945cd7c63"
     },
     {
-      "id": "commit:b7aa5e3c1815b605162f58898871cd8945cd7c63->branch:coderandhiker-v2-add-lineage-demo:base for",
+      "id": "commit:b7aa5e3c1815b605162f58898871cd8945cd7c63->branch:OTEL:base for",
       "label": "base for",
       "primary": true,
       "provenance": "Git commit/trailer",
       "source": "commit:b7aa5e3c1815b605162f58898871cd8945cd7c63",
-      "target": "branch:coderandhiker-v2-add-lineage-demo"
+      "target": "branch:OTEL"
     },
     {
-      "id": "branch:coderandhiker-v2-add-lineage-demo->pr:coderandhiker-v2-add-lineage-demo:publishes as",
+      "id": "branch:OTEL->pr:OTEL:publishes as",
       "label": "publishes as",
       "primary": true,
       "provenance": "planned/live GitHub metadata",
-      "source": "branch:coderandhiker-v2-add-lineage-demo",
-      "target": "pr:coderandhiker-v2-add-lineage-demo"
+      "source": "branch:OTEL",
+      "target": "pr:OTEL"
     },
     {
-      "id": "pr:coderandhiker-v2-add-lineage-demo->release:promotes to",
+      "id": "pr:OTEL->release:promotes to",
       "label": "promotes to",
       "primary": true,
       "provenance": "planned/live GitHub metadata",
-      "source": "pr:coderandhiker-v2-add-lineage-demo",
+      "source": "pr:OTEL",
       "target": "release"
     }
   ],
@@ -37565,7 +37564,7 @@
         "session_id": "a3def810-4c47-4cbd-9c3b-78fcc833cc4a"
       },
       {
-        "branch": "coderandhiker-v2-add-lineage-demo",
+        "branch": "OTEL",
         "layer": 6,
         "name": "Lineage evidence package",
         "session_id": null
@@ -37602,7 +37601,7 @@
     "limitations": [
       "Host-driven logical parent/child linkage; no operating-system process nesting is claimed.",
       "No W3C traceparent propagation is claimed across sessions.",
-      "Feature pull request nodes use approved live metadata; the package pull request and release remain placeholders until publication is explicitly approved."
+      "Feature pull request nodes use approved GitHub metadata; the package pull request and release remain placeholders until publication is explicitly approved."
     ],
     "orchestration": {
       "description": "The captured parent records delegation intent and writes child prompts. The host App session launches each captured child directly and sequentially.",
@@ -37621,8 +37620,8 @@
     },
     "package": {
       "name": "model-storage-checker",
-      "package_branch": "coderandhiker-v2-add-lineage-demo",
-      "package_commit": null,
+      "package_branch": "OTEL",
+      "package_commit": "02460aed650fe0384e327bfb04cfccc35652e1f7",
       "run": 2,
       "source_directory_name": "model-storage-checker-lineage-run-2-20260922T184143Z"
     },
@@ -37877,7 +37876,7 @@
         "planned/live GitHub metadata"
       ],
       "session_id": "fcde51a0-d70c-4ee9-a538-c2f335c28058",
-      "status": "live",
+      "status": "merged",
       "summary": "coderandhiker-v2-bootstrap-model-checker"
     },
     {
@@ -37984,7 +37983,7 @@
         "planned/live GitHub metadata"
       ],
       "session_id": "d8d12118-ec2b-4fe1-abdd-9abfa0c8e755",
-      "status": "live",
+      "status": "merged",
       "summary": "coderandhiker-v2-add-ollama-inventory"
     },
     {
@@ -38091,7 +38090,7 @@
         "planned/live GitHub metadata"
       ],
       "session_id": "3794ecb9-b919-444e-ac7b-34686c5b17d5",
-      "status": "live",
+      "status": "merged",
       "summary": "coderandhiker-v2-add-lm-studio-inventory"
     },
     {
@@ -38198,7 +38197,7 @@
         "planned/live GitHub metadata"
       ],
       "session_id": "c20d130e-f890-431d-aee8-32801bad8b31",
-      "status": "live",
+      "status": "merged",
       "summary": "coderandhiker-v2-add-docker-inventory"
     },
     {
@@ -38464,26 +38463,26 @@
         "planned/live GitHub metadata"
       ],
       "session_id": "a3def810-4c47-4cbd-9c3b-78fcc833cc4a",
-      "status": "live",
+      "status": "merged",
       "summary": "coderandhiker-v2-add-cleanup-reporting"
     },
     {
       "expandable": false,
-      "id": "branch:coderandhiker-v2-add-lineage-demo",
+      "id": "branch:OTEL",
       "kind": "branch",
-      "label": "coderandhiker-v2-add-lineage-demo",
+      "label": "OTEL",
       "layer": 6,
       "provenance": [
         "Git commit/trailer",
         "planned/live GitHub metadata"
       ],
       "session_id": null,
-      "status": "working-tree",
-      "summary": "Lineage evidence package; commit intentionally pending."
+      "status": "published",
+      "summary": "Customer-facing prompt-to-PR telemetry evidence."
     },
     {
       "expandable": false,
-      "id": "pr:coderandhiker-v2-add-lineage-demo",
+      "id": "pr:OTEL",
       "kind": "pull-request",
       "label": "Package PR pending approval",
       "layer": 6,
@@ -38492,7 +38491,7 @@
       ],
       "session_id": null,
       "status": "placeholder",
-      "summary": "coderandhiker-v2-add-lineage-demo"
+      "summary": "OTEL"
     },
     {
       "expandable": false,

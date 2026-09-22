@@ -32,8 +32,8 @@
       "theme": 1,
       "worksheet": 6
     },
-    "total_compressed_bytes": 12457,
-    "total_uncompressed_bytes": 54762
+    "total_compressed_bytes": 12717,
+    "total_uncompressed_bytes": 56245
   },
   "safe": true,
   "safety_checks": {
@@ -50,7 +50,7 @@
   "schema_version": 1,
   "workbook": {
     "path": "docs/lineage/model-storage-checker-lineage-run-2.xlsx",
-    "sha256": "8f92fc4226afdfa638383093afaa63aae06401a4289cb0853aaf4a03bd3a8f72",
+    "sha256": "11c81dcba23eea8ce127cec28deddeea14c53a6aae43926a4f8f20fbd645d394",
     "sheet_count": 6,
     "sheet_names": [
       "Sheet1",
@@ -60,6 +60,6 @@
       "Redactions",
       "Validation"
     ],
-    "size_bytes": 14219
+    "size_bytes": 14479
   }
 }

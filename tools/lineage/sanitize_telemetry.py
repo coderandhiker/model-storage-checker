@@ -903,6 +903,7 @@ def normalize_manifest(
     *,
     source_root: Path,
     package_branch: str | None,
+    package_commit: str | None,
     publication_metadata: dict[str, Any],
     recorder: RedactionRecorder,
 ) -> dict[str, Any]:
@@ -1094,7 +1095,7 @@ def normalize_manifest(
             "run": raw.get("poc", {}).get("run"),
             "source_directory_name": source_root.name,
             "package_branch": package_branch,
-            "package_commit": None,
+            "package_commit": package_commit,
         },
         "created_at": raw.get("created_at"),
         "status": raw.get("status"),
@@ -1484,6 +1485,7 @@ def sanitize_run(
     output_root: Path,
     repo_root: Path,
     package_branch: str | None = None,
+    package_commit: str | None = None,
     publication_metadata_path: Path | None = None,
 ) -> dict[str, Any]:
     source_root = source_root.resolve()
@@ -1493,6 +1495,10 @@ def sanitize_run(
         raise ValueError(f"Source run directory does not exist: {source_root}")
     if source_root == output_root or source_root in output_root.parents:
         raise ValueError("Output must not be inside the read-only source run")
+    if package_commit is not None and not re.fullmatch(
+        r"[0-9a-f]{40}", package_commit
+    ):
+        raise ValueError("Package commit must be a 40-character lowercase SHA")
     raw_manifest = read_json(source_root / "run-manifest.json")
     branch = package_branch if package_branch is not None else current_branch(repo_root)
     metadata_path = publication_metadata_path
@@ -1640,6 +1646,7 @@ def sanitize_run(
         raw_manifest,
         source_root=source_root,
         package_branch=branch,
+        package_commit=package_commit,
         publication_metadata=publication_metadata,
         recorder=recorder,
     )
@@ -1747,6 +1754,10 @@ def parse_args() -> argparse.Namespace:
         help="Override the package branch recorded in the public manifest",
     )
     parser.add_argument(
+        "--package-commit",
+        help="Published evidence commit recorded in the public manifest",
+    )
+    parser.add_argument(
         "--publication-metadata",
         type=Path,
         help=(
@@ -1764,6 +1775,7 @@ def main() -> int:
         output_root=args.output,
         repo_root=args.repo_root,
         package_branch=args.package_branch,
+        package_commit=args.package_commit,
         publication_metadata_path=args.publication_metadata,
     )
     print(

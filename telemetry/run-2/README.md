@@ -16,9 +16,9 @@ directory are intentionally not committed.
 - 10 compact usage summaries, sanitized driver audit records, normalized
   validation summaries, a public manifest, a redaction report, and artifact
   integrity metadata.
-- Approved live metadata for the five feature PRs (#6 through #10), including
-  each base branch and verified head commit. The layer-6 package PR and release
-  remain planned.
+- Approved merged metadata for the five feature PRs (#6 through #10),
+  including each base branch and verified head commit. The customer-facing
+  evidence branch is `OTEL`; its separate package PR and release remain null.
 - A curated companion workbook at
   [`../../docs/lineage/model-storage-checker-lineage-run-2.xlsx`](../../docs/lineage/model-storage-checker-lineage-run-2.xlsx)
   plus a structural safety report. This is not the private raw trace workbook.
@@ -67,7 +67,7 @@ matches in the generated evidence.
 - `validation/`: final and per-layer summaries plus sanitizer preservation
   checks.
 - `manifest.json`: normalized repository/session/branch/commit/test/capture
-  metadata. Each feature layer includes its live PR metadata; the package-level
+  metadata. Each feature layer includes its merged PR metadata; the package-level
   `pull_request` and `release` fields remain null.
 - `publication-metadata.json`: approved public PR overlay validated against
   every feature branch, base branch, and verified commit SHA.
@@ -180,12 +180,13 @@ SOURCE_RUN=/path/to/private/model-storage-checker-lineage-run-2
 python3 tools/lineage/sanitize_telemetry.py "$SOURCE_RUN" \
   --output telemetry/run-2 \
   --repo-root . \
-  --package-branch coderandhiker-v2-add-lineage-demo
+  --package-branch OTEL \
+  --package-commit 02460aed650fe0384e327bfb04cfccc35652e1f7
 python3 tools/lineage/inspect_workbook.py \
   docs/lineage/model-storage-checker-lineage-run-2.xlsx \
   --output telemetry/run-2/validation/workbook-safety.json \
   --repo-root . \
-  --expected-sha256 8f92fc4226afdfa638383093afaa63aae06401a4289cb0853aaf4a03bd3a8f72
+  --expected-sha256 11c81dcba23eea8ce127cec28deddeea14c53a6aae43926a4f8f20fbd645d394
 python3 tools/lineage/build_dashboard.py \
   --telemetry-root telemetry/run-2 \
   --output docs/lineage/data.json \
@@ -200,8 +201,8 @@ and merged into the public manifest automatically.
 
 ## Updating approved PR or release metadata
 
-The current overlay records live, open, non-draft feature PRs #6 through #10.
-The package PR and release remain null until separately approved. Update
+The current overlay records merged, non-draft feature PRs #6 through #10.
+The OTEL package PR and release remain null. Update
 `publication-metadata.json` only with approved public values:
 
 ```json
@@ -210,7 +211,7 @@ The package PR and release remain null until separately approved. Update
     "branch-name": {
       "number": 123,
       "url": "https://github.com/owner/repository/pull/123",
-      "state": "open",
+      "state": "merged",
       "draft": false,
       "base": "parent-branch",
       "head_sha": "0123456789abcdef0123456789abcdef01234567"
@@ -224,7 +225,8 @@ The package PR and release remain null until separately approved. Update
 python3 tools/lineage/sanitize_telemetry.py "$SOURCE_RUN" \
   --output telemetry/run-2 \
   --repo-root . \
-  --package-branch coderandhiker-v2-add-lineage-demo
+  --package-branch OTEL \
+  --package-commit 02460aed650fe0384e327bfb04cfccc35652e1f7
 python3 tools/lineage/inspect_workbook.py \
   docs/lineage/model-storage-checker-lineage-run-2.xlsx \
   --output telemetry/run-2/validation/workbook-safety.json \

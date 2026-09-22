@@ -2,27 +2,27 @@
   "algorithm": "sha256",
   "external_generated_files": [
     {
-      "line_count": 38533,
+      "line_count": 38532,
       "media_type": "application/json",
       "path": "docs/lineage/data.json",
-      "sha256": "d032fdd8de0063bbb75bf80480d0462e44c6706dc312681d156d0c89fac9cbc9",
-      "size_bytes": 4510351
+      "sha256": "d13bdd4786c2c1efc2b403d5407eac740fd12da9aadbbaac9f3d7a76bb480279",
+      "size_bytes": 4509824
     },
     {
       "line_count": null,
       "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "path": "docs/lineage/model-storage-checker-lineage-run-2.xlsx",
-      "sha256": "8f92fc4226afdfa638383093afaa63aae06401a4289cb0853aaf4a03bd3a8f72",
-      "size_bytes": 14219
+      "sha256": "11c81dcba23eea8ce127cec28deddeea14c53a6aae43926a4f8f20fbd645d394",
+      "size_bytes": 14479
     }
   ],
   "files": [
     {
-      "line_count": 241,
+      "line_count": 243,
       "media_type": "text/plain",
       "path": "README.md",
-      "sha256": "2b8b4ed0aa14189f0010552b6368477fdc44b83b6065110e2eab8c656993a6f8",
-      "size_bytes": 10747
+      "sha256": "72155e2eadafa29bb9c07757606674745441cf553f9990f71b9607f7fa97e957",
+      "size_bytes": 10839
     },
     {
       "line_count": 43,
@@ -35,8 +35,8 @@
       "line_count": 653,
       "media_type": "application/json",
       "path": "manifest.json",
-      "sha256": "e3c07383cbdc6228ff88e298c8874cb0e00bcfc0020aaa6cca2f846d1dca4b9b",
-      "size_bytes": 20799
+      "sha256": "23b4d0fd503b8f034734b97a562b6c37b20dfb396c546f4d923fa0e0372ab902",
+      "size_bytes": 20828
     },
     {
       "line_count": 36,
@@ -182,8 +182,8 @@
       "line_count": 46,
       "media_type": "application/json",
       "path": "publication-metadata.json",
-      "sha256": "b30f122f98ecb119ccb869c5b90046a632267d9b788eb07392451fd00904244d",
-      "size_bytes": 1612
+      "sha256": "f301eb8608fbc68f03a06be0a9d0c848dd2b14de16e36759f504ec47edca0370",
+      "size_bytes": 1622
     },
     {
       "line_count": 7371,
@@ -308,7 +308,7 @@
       "line_count": 258,
       "media_type": "application/json",
       "path": "validation/sanitization-validation.json",
-      "sha256": "8c91866ab4f3c80bc2435484d99a66e2defcbea9549dc01605f1460d784bdd8c",
+      "sha256": "99c4565369bdeff9598c2a1d791870eeaf4ba98764419e6c584eefc4b118bcb9",
       "size_bytes": 6611
     },
     {
@@ -322,20 +322,20 @@
       "line_count": 65,
       "media_type": "application/json",
       "path": "validation/workbook-safety.json",
-      "sha256": "2be5d19b8b18fee9f772c53ad47c135eebbcd57c3bc1b0b3ec1b53d135de4f85",
+      "sha256": "f024efcd5e3163407d217716d6c0cb593ed7a42a151e330abb7bf7e8642e7502",
       "size_bytes": 1703
     }
   ],
   "schema_version": 1,
   "self_integrity": {
-    "canonical_sha256": "477fc772f82bb2b35c79738ff2e92f82bb03fb454be05c272291edbbf18f8088",
+    "canonical_sha256": "e68b32018e4b5d7bcce71af5e2a7365e0aad35c3f6d9925e19f118fd868b9faa",
     "mode": "SHA-256 of canonical JSON excluding self_integrity; exact file self-hashing is intentionally avoided."
   },
   "summary": {
     "external_file_count": 2,
     "file_count": 46,
-    "largest_file_bytes": 4510351,
+    "largest_file_bytes": 4509824,
     "telemetry_file_count": 44,
-    "total_size_bytes": 8504118
+    "total_size_bytes": 8503982
   }
 }

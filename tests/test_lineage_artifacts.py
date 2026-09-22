@@ -128,6 +128,7 @@ class LineageArtifactTests(unittest.TestCase):
             output_root=self.output,
             repo_root=self.repo,
             package_branch="package-layer",
+            package_commit=self.commit_sha,
         )
         workbook_report = inspect_workbook(
             self.workbook,
@@ -176,7 +177,17 @@ class LineageArtifactTests(unittest.TestCase):
             if item["kind"] == "pull-request" and item["layer"] == 1
         )
         self.assertEqual(layer_pr["label"], "PR #1")
-        self.assertEqual(layer_pr["status"], "live")
+        self.assertEqual(layer_pr["status"], "merged")
+        package_branch = next(
+            item
+            for item in data["nodes"]
+            if item["id"] == "branch:package-layer"
+        )
+        self.assertEqual(package_branch["status"], "published")
+        self.assertEqual(
+            data["details"]["branch:package-layer"]["package_commit"],
+            self.commit_sha,
+        )
         self.assertIsNone(data["details"]["release"]["metadata"])
         self.assertTrue(dashboard_path.is_file())
         integrity = json.loads(
@@ -651,7 +662,7 @@ class LineageArtifactTests(unittest.TestCase):
                         "layer-one": {
                             "number": 1,
                             "url": "https://github.com/example/repo/pull/1",
-                            "state": "open",
+                            "state": "merged",
                             "draft": False,
                             "base": "main",
                             "head_sha": self.commit_sha,

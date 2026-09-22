@@ -357,7 +357,9 @@ pre {
 
 .badge.status-verified,
 .badge.status-captured,
-.badge.status-live {
+.badge.status-live,
+.badge.status-merged,
+.badge.status-published {
   border-color: #287c70;
   background: #123c38;
 }

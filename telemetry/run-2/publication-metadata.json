@@ -5,7 +5,7 @@
       "draft": false,
       "head_sha": "b7aa5e3c1815b605162f58898871cd8945cd7c63",
       "number": 10,
-      "state": "open",
+      "state": "merged",
       "url": "https://github.com/coderandhiker/model-storage-checker/pull/10"
     },
     "coderandhiker-v2-add-docker-inventory": {
@@ -13,7 +13,7 @@
       "draft": false,
       "head_sha": "c039b2abc8ad8b498f13104d2b7ffd3410939701",
       "number": 9,
-      "state": "open",
+      "state": "merged",
       "url": "https://github.com/coderandhiker/model-storage-checker/pull/9"
     },
     "coderandhiker-v2-add-lm-studio-inventory": {
@@ -21,7 +21,7 @@
       "draft": false,
       "head_sha": "f78114c939a24c970d3c71a92185f47d92f6b61b",
       "number": 8,
-      "state": "open",
+      "state": "merged",
       "url": "https://github.com/coderandhiker/model-storage-checker/pull/8"
     },
     "coderandhiker-v2-add-ollama-inventory": {
@@ -29,7 +29,7 @@
       "draft": false,
       "head_sha": "f324548ef28cd2ba2f9ba058a6d22a3099efe03f",
       "number": 7,
-      "state": "open",
+      "state": "merged",
       "url": "https://github.com/coderandhiker/model-storage-checker/pull/7"
     },
     "coderandhiker-v2-bootstrap-model-checker": {
@@ -37,7 +37,7 @@
       "draft": false,
       "head_sha": "526d4ef413a2760fa5ed1c010e2f577d757d2480",
       "number": 6,
-      "state": "open",
+      "state": "merged",
       "url": "https://github.com/coderandhiker/model-storage-checker/pull/6"
     }
   },
