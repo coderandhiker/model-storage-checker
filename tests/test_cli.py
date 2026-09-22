@@ -13,6 +13,7 @@ from urllib.error import URLError
 
 from model_storage_checker.cli import ExitCode, main
 from model_storage_checker.providers import ProviderStatus
+from model_storage_checker.results import OperationResult
 
 
 class CliTests(unittest.TestCase):
@@ -26,6 +27,13 @@ class CliTests(unittest.TestCase):
             "model_storage_checker.cli.LMStudioProvider.status",
             return_value=ProviderStatus(
                 name="lm-studio",
+                available=False,
+                message="not running",
+            ),
+        ), patch(
+            "model_storage_checker.cli.DockerProvider.status",
+            return_value=ProviderStatus(
+                name="docker",
                 available=False,
                 message="not running",
             ),
@@ -49,6 +57,13 @@ class CliTests(unittest.TestCase):
                 available=False,
                 message="not running",
             ),
+        ), patch(
+            "model_storage_checker.cli.DockerProvider.status",
+            return_value=ProviderStatus(
+                name="docker",
+                available=False,
+                message="not running",
+            ),
         ):
             exit_code = main(
                 ["--output", "json", "providers"], stdout=stdout
@@ -65,6 +80,7 @@ class CliTests(unittest.TestCase):
             "connection refused", providers["ollama"]["message"]
         )
         self.assertFalse(providers["lm-studio"]["available"])
+        self.assertFalse(providers["docker"]["available"])
 
     def test_missing_provider_is_a_json_error(self) -> None:
         stdout = io.StringIO()
@@ -196,6 +212,43 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(open_url.call_args.kwargs["timeout"], 1.25)
 
+    def test_docker_options_are_wired_to_provider(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        with patch(
+            "model_storage_checker.cli.DockerProvider"
+        ) as provider_type:
+            provider = provider_type.return_value
+            provider.name = "docker"
+            provider.status.return_value = ProviderStatus(
+                name="docker", available=True
+            )
+            provider.list_models.return_value = OperationResult.success(())
+            exit_code = main(
+                [
+                    "--output",
+                    "json",
+                    "--docker-executable",
+                    "/opt/bin/docker",
+                    "--docker-timeout",
+                    "1.75",
+                    "list",
+                    "--provider",
+                    "docker",
+                ],
+                stdout=stdout,
+                stderr=stderr,
+            )
+
+        self.assertEqual(exit_code, ExitCode.SUCCESS)
+        self.assertEqual(json.loads(stdout.getvalue()), {"models": []})
+        self.assertEqual(stderr.getvalue(), "")
+        provider_type.assert_called_once_with(
+            executable="/opt/bin/docker",
+            timeout=1.75,
+        )
+
     def test_module_entry_point_runs(self) -> None:
         root = Path(__file__).resolve().parents[1]
         environment = os.environ.copy()
@@ -219,6 +272,8 @@ class CliTests(unittest.TestCase):
         self.assertIn("--ollama-base-url", completed.stdout)
         self.assertIn("--lm-studio-base-url", completed.stdout)
         self.assertIn("--lm-studio-model-root", completed.stdout)
+        self.assertIn("--docker-executable", completed.stdout)
+        self.assertIn("--docker-timeout", completed.stdout)
         self.assertEqual(completed.stderr, "")
 
 

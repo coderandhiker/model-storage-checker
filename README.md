@@ -3,7 +3,8 @@
 Model Storage Checker is a dependency-free Python tool for inspecting locally
 stored model files. It includes an Ollama inventory provider using Ollama's
 local HTTP API and an LM Studio provider using its local API and model
-directories.
+directories, plus a Docker provider that inventories local images and
+containers using the Docker CLI.
 
 Requires Python 3.11 or newer.
 
@@ -18,6 +19,8 @@ model-storage-checker --ollama-base-url http://localhost:11434 --ollama-timeout 
 model-storage-checker --output json list --provider lm-studio
 model-storage-checker --lm-studio-base-url http://localhost:1234 --lm-studio-timeout 3 list --provider lm-studio
 model-storage-checker --lm-studio-model-root /Volumes/models/lm-studio list --provider lm-studio
+model-storage-checker --output json list --provider docker
+model-storage-checker --docker-timeout 10 list --provider docker
 python -m model_storage_checker --output text providers
 ```
 
@@ -59,6 +62,29 @@ reported as `provider_error`; if neither the API nor disk can provide an
 inventory, the provider reports `provider_unavailable`. A valid empty API
 response combined with an existing empty model directory is a successful
 empty inventory.
+
+## Docker
+
+The Docker provider uses the `docker` CLI to inventory every local image and
+every container, including stopped containers. It runs read-only
+`docker image ls` and `docker container ls` commands with Go-template JSON
+output; it never deletes, prunes, starts, stops, or otherwise changes Docker
+resources. Use `--docker-executable PATH` to select a Docker CLI and
+`--docker-timeout` to change the command timeout.
+
+Image records include repository, tag, full image ID, created time, virtual
+size, shared size when Docker reports it, dangling status, digest, labels, and
+other listing metadata. Container records include full container ID, name,
+image, state, status, created time, writable and virtual size, and an explicit
+`running` boolean. The `local_ai_classification` metadata is clearly marked as
+heuristic and recognizes common Ollama, LocalAI, vLLM, and llama.cpp names;
+unclassified images and containers are still included.
+
+A missing Docker CLI, unavailable daemon, or permission denial produces a
+distinct `provider_unavailable` result. Timeouts, other command failures, and
+malformed output produce `provider_error`, with a machine-readable reason in
+the error details. A successful inventory with no images or containers is an
+empty success.
 
 ## Tests
 

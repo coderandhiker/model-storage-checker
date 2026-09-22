@@ -10,6 +10,11 @@ from enum import IntEnum
 from typing import Sequence, TextIO
 
 from . import __version__
+from .docker import (
+    DEFAULT_EXECUTABLE as DOCKER_DEFAULT_EXECUTABLE,
+    DEFAULT_TIMEOUT as DOCKER_DEFAULT_TIMEOUT,
+    DockerProvider,
+)
 from .errors import CheckerError
 from .lm_studio import (
     DEFAULT_BASE_URL as LM_STUDIO_DEFAULT_BASE_URL,
@@ -91,6 +96,25 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "LM Studio model directory; repeat for multiple roots "
             f"(default: {LM_STUDIO_DEFAULT_MODEL_ROOTS[0]})"
+        ),
+    )
+    parser.add_argument(
+        "--docker-executable",
+        default=DOCKER_DEFAULT_EXECUTABLE,
+        metavar="PATH",
+        help=(
+            "Docker CLI executable "
+            f"(default: {DOCKER_DEFAULT_EXECUTABLE})"
+        ),
+    )
+    parser.add_argument(
+        "--docker-timeout",
+        default=DOCKER_DEFAULT_TIMEOUT,
+        type=_positive_timeout,
+        metavar="SECONDS",
+        help=(
+            "Docker command timeout "
+            f"(default: {DOCKER_DEFAULT_TIMEOUT:g} seconds)"
         ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -178,6 +202,10 @@ def main(
                     base_url=args.lm_studio_base_url,
                     timeout=args.lm_studio_timeout,
                     model_roots=args.lm_studio_model_roots,
+                ),
+                DockerProvider(
+                    executable=args.docker_executable,
+                    timeout=args.docker_timeout,
                 ),
             )
         )

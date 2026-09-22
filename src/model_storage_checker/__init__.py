@@ -1,5 +1,6 @@
 """Model storage checker foundation."""
 
+from .docker import DockerProvider
 from .errors import CheckerError, ErrorCode
 from .lm_studio import LMStudioProvider
 from .models import ModelRecord
@@ -9,6 +10,7 @@ from .results import OperationResult
 
 __all__ = [
     "CheckerError",
+    "DockerProvider",
     "ErrorCode",
     "LMStudioProvider",
     "ModelProvider",
