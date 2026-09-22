@@ -6,6 +6,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Protocol, runtime_checkable
 
+from .docker import DockerConfig, DockerProvider
 from .errors import UnsupportedProviderError
 from .lm_studio import LMStudioConfig, LMStudioProvider
 from .models import Operation, ProviderResult
@@ -60,6 +61,8 @@ def create_default_registry(
     lm_studio_base_url: str | None = None,
     lm_studio_timeout: float | None = None,
     lm_studio_model_roots: tuple[str, ...] | None = None,
+    docker_timeout: float | None = None,
+    docker_classify_ai: bool = False,
 ) -> ProviderRegistry:
     ollama_defaults = OllamaConfig()
     ollama_config = OllamaConfig(
@@ -82,9 +85,21 @@ def create_default_registry(
             else lm_studio_defaults.model_roots
         ),
     )
+    docker_defaults = DockerConfig()
+    docker_config = DockerConfig(
+        timeout=(
+            docker_timeout
+            if docker_timeout is not None
+            else docker_defaults.timeout
+        ),
+        classify_ai=docker_classify_ai,
+    )
     return ProviderRegistry(
-        (OllamaProvider(ollama_config), LMStudioProvider(lm_studio_config)),
-        unsupported_names=("docker",),
+        (
+            OllamaProvider(ollama_config),
+            LMStudioProvider(lm_studio_config),
+            DockerProvider(docker_config),
+        ),
     )
 
 

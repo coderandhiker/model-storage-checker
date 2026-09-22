@@ -1,5 +1,6 @@
 """Public abstractions for model storage providers."""
 
+from .docker import DockerConfig, DockerProvider
 from .errors import (
     ModelStorageCheckerError,
     ProviderFailureError,
@@ -13,6 +14,8 @@ from .ollama import OllamaConfig, OllamaProvider
 from .providers import Provider, ProviderRegistry
 
 __all__ = [
+    "DockerConfig",
+    "DockerProvider",
     "ModelRecord",
     "ModelStorageCheckerError",
     "LMStudioConfig",

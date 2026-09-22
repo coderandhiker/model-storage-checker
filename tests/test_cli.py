@@ -38,6 +38,10 @@ class SuccessfulLMStudioProvider(SuccessfulProvider):
     name = "lm-studio"
 
 
+class SuccessfulDockerProvider(SuccessfulProvider):
+    name = "docker"
+
+
 class UnavailableProvider:
     name = "offline"
 
@@ -136,6 +140,13 @@ class CliTests(unittest.TestCase):
                     main(["list", "--ollama-timeout", timeout])
                 self.assertEqual(context.exception.code, 2)
 
+    def test_argparse_rejects_non_positive_docker_timeout(self) -> None:
+        for timeout in ("0", "-1", "nan", "inf", "not-a-number"):
+            with self.subTest(timeout=timeout):
+                with self.assertRaises(SystemExit) as context:
+                    main(["list", "--docker-timeout", timeout])
+                self.assertEqual(context.exception.code, 2)
+
     def test_argparse_rejects_invalid_ollama_base_url(self) -> None:
         with self.assertRaises(SystemExit) as context:
             main(["list", "--ollama-base-url", "file:///tmp/ollama"])
@@ -170,6 +181,8 @@ class CliTests(unittest.TestCase):
             lm_studio_base_url="http://127.0.0.1:1234/v1",
             lm_studio_timeout=5.0,
             lm_studio_model_roots=None,
+            docker_timeout=10.0,
+            docker_classify_ai=False,
         )
 
     def test_lm_studio_options_configure_default_registry(self) -> None:
@@ -204,6 +217,45 @@ class CliTests(unittest.TestCase):
             lm_studio_base_url="http://localhost:9999/v1",
             lm_studio_timeout=2.5,
             lm_studio_model_roots=("/models/one", "/models/two"),
+            docker_timeout=10.0,
+            docker_classify_ai=False,
+        )
+
+    def test_docker_options_configure_default_registry(self) -> None:
+        configured_registry = ProviderRegistry((SuccessfulDockerProvider(),))
+        stream = io.StringIO()
+
+        with patch(
+            "model_storage_checker.cli.create_default_registry",
+            return_value=configured_registry,
+        ) as create_registry:
+            exit_code = main(
+                [
+                    "list",
+                    "--provider",
+                    "docker",
+                    "--docker-timeout",
+                    "4.5",
+                    "--docker-ai-heuristic",
+                ],
+                stdout=stream,
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(
+            stream.getvalue(),
+            "docker: ok (2 inventory records)\n"
+            "  a (size unknown)\n"
+            "  z (20 bytes)\n",
+        )
+        create_registry.assert_called_once_with(
+            ollama_base_url="http://127.0.0.1:11434",
+            ollama_timeout=5.0,
+            lm_studio_base_url="http://127.0.0.1:1234/v1",
+            lm_studio_timeout=5.0,
+            lm_studio_model_roots=None,
+            docker_timeout=4.5,
+            docker_classify_ai=True,
         )
 
 

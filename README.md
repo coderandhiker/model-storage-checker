@@ -1,8 +1,9 @@
 # Model Storage Checker
 
 `model-storage-checker` is a Python 3.11+ command-line tool for reporting
-locally stored models. It discovers models from local Ollama and LM Studio
-services, as well as LM Studio model files on disk.
+locally stored models and related runtime storage. It discovers models from
+local Ollama and LM Studio services, LM Studio model files on disk, and Docker
+images and containers.
 
 ## Installation
 
@@ -77,6 +78,26 @@ without its final extension. If multiple matching files exist, each remains a
 separate record with its own size and location; API metadata is retained on
 each. This avoids merging models based on ambiguous file names.
 
+### Docker configuration
+
+Docker inventory uses only the Docker CLI and performs two read-only queries:
+`docker image ls` for every image and `docker container ls --all` for every
+container, including stopped containers. Both commands request JSON template
+output. Image records include IDs, repository references, digests, creation
+details, and reported sizes. Container records include IDs, names, state,
+status, creation details, reported writable-layer sizes, and their image
+relationships. No Docker SDK or daemon mutation is used.
+
+Each Docker CLI query has a ten-second default timeout:
+
+```console
+model-storage-checker list --provider docker --docker-timeout 20
+```
+
+`--docker-ai-heuristic` optionally annotates every Docker record with a clearly
+marked heuristic classification. It does not filter the inventory; all images
+and containers remain present regardless of the label.
+
 ## Output
 
 Human-readable text is the default:
@@ -108,8 +129,14 @@ unreachable API is `unavailable`; malformed API responses and invalid,
 missing, or inaccessible model roots are `error`. Empty successful sources
 produce a successful empty inventory.
 
+Docker reports a missing CLI, unavailable daemon, permission denial, and
+timeout as distinct `unavailable` outcomes. A failed CLI query or malformed
+JSON/template record is an `error`. Successful commands with no images or
+containers produce a successful empty inventory. Docker discovery never
+removes, prunes, stops, restarts, creates, or otherwise changes resources.
+
 ## Current provider scope
 
-Ollama and LM Studio inventory are supported. Docker is a recognized name but
-is explicitly reported as unsupported. Discovery is read-only: no telemetry
-capture, model mutation, or container changes are performed.
+Ollama, LM Studio, and Docker inventory are supported. Discovery is read-only:
+no telemetry capture, model mutation, or Docker resource changes are
+performed.

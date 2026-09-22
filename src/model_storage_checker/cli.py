@@ -9,6 +9,7 @@ import sys
 from collections.abc import Sequence
 from typing import TextIO
 
+from .docker import DEFAULT_TIMEOUT as DEFAULT_DOCKER_TIMEOUT
 from .errors import (
     ProviderFailureError,
     ProviderUnavailableError,
@@ -122,6 +123,21 @@ def build_parser(registry: ProviderRegistry = DEFAULT_REGISTRY) -> argparse.Argu
             f"(default: {DEFAULT_MODEL_ROOTS[0]})"
         ),
     )
+    parser.add_argument(
+        "--docker-timeout",
+        default=DEFAULT_DOCKER_TIMEOUT,
+        type=_positive_timeout,
+        metavar="SECONDS",
+        help=(
+            "Docker CLI timeout per inventory command in seconds "
+            f"(default: {DEFAULT_DOCKER_TIMEOUT:g})"
+        ),
+    )
+    parser.add_argument(
+        "--docker-ai-heuristic",
+        action="store_true",
+        help="annotate Docker records with an optional AI-related heuristic",
+    )
     return parser
 
 
@@ -172,9 +188,11 @@ def _write_json(
 def _write_text(stream: TextIO, results: Sequence[ProviderResult]) -> None:
     for result in results:
         if result.status is ProviderStatus.OK:
-            stream.write(f"{result.provider}: ok ({len(result.records)} models)\n")
+            noun = "inventory records" if result.provider == "docker" else "models"
+            stream.write(f"{result.provider}: ok ({len(result.records)} {noun})\n")
         else:
-            count = f" ({len(result.records)} models)" if result.records else ""
+            noun = "inventory records" if result.provider == "docker" else "models"
+            count = f" ({len(result.records)} {noun})" if result.records else ""
             stream.write(
                 f"{result.provider}: {result.status.value}{count} - {result.message}\n"
             )
@@ -219,6 +237,8 @@ def main(
                 if args.lm_studio_model_roots is not None
                 else None
             ),
+            docker_timeout=args.docker_timeout,
+            docker_classify_ai=args.docker_ai_heuristic,
         )
     provider_names = (
         args.providers if args.providers is not None else active_registry.names
