@@ -1,0 +1,258 @@
+{
+  "capture_files": [
+    {
+      "path": "otel/05-reporting-resume-attempt-2.jsonl",
+      "record_count": 36
+    },
+    {
+      "path": "otel/05-reporting-resume-attempt-3.jsonl",
+      "record_count": 31
+    },
+    {
+      "path": "otel/05-reporting-resume-attempt-4.jsonl",
+      "record_count": 38
+    },
+    {
+      "path": "otel/layer-1-resume.jsonl",
+      "record_count": 28
+    },
+    {
+      "path": "otel/layer-1.jsonl",
+      "record_count": 86
+    },
+    {
+      "path": "otel/layer-2.jsonl",
+      "record_count": 106
+    },
+    {
+      "path": "otel/layer-3.jsonl",
+      "record_count": 155
+    },
+    {
+      "path": "otel/layer-4.jsonl",
+      "record_count": 139
+    },
+    {
+      "path": "otel/layer-5.jsonl",
+      "record_count": 103
+    },
+    {
+      "path": "otel/orchestrator.jsonl",
+      "record_count": 48
+    }
+  ],
+  "confidential_structural_findings": 0,
+  "preservation": {
+    "assistant_messages": {
+      "exact_match": true,
+      "output": {
+        "combined_sha256": "2470d1b6e5906e27d878de61762132bc22969f792f77c09ea2528c6457230b31",
+        "count": 163
+      },
+      "source": {
+        "combined_sha256": "2470d1b6e5906e27d878de61762132bc22969f792f77c09ea2528c6457230b31",
+        "count": 163
+      }
+    },
+    "system_fields": {
+      "exact_match": false,
+      "output": {
+        "combined_sha256": "d36726230cdd9100c146525bb56f5fa4b9e66fafddd3bdf59e36268ac6e688c0",
+        "count": 163
+      },
+      "source": {
+        "combined_sha256": "2b3fca2224ab115f18a3ac6bcb7051d07dcb3598d7c425e7a4034eaec97123f2",
+        "count": 163
+      }
+    },
+    "tool_call_arguments": {
+      "exact_match": true,
+      "output": {
+        "combined_sha256": "3094320733f6a2a7266ed0873c607e3963d894dbd48230a861108a06a459daff",
+        "count": 240
+      },
+      "source": {
+        "combined_sha256": "3094320733f6a2a7266ed0873c607e3963d894dbd48230a861108a06a459daff",
+        "count": 240
+      }
+    },
+    "tool_call_results": {
+      "exact_match": true,
+      "output": {
+        "combined_sha256": "4c0e987bd398769d3d649ca7b76a7b24c0852232c297de70849d929b9643369c",
+        "count": 240
+      },
+      "source": {
+        "combined_sha256": "4c0e987bd398769d3d649ca7b76a7b24c0852232c297de70849d929b9643369c",
+        "count": 240
+      }
+    },
+    "tool_definition_fields": {
+      "exact_match": false,
+      "output": {
+        "combined_sha256": "8c80b3bf408a078c314f9205642905d8941294416dc33994d070a4589213ef5c",
+        "count": 163
+      },
+      "source": {
+        "combined_sha256": "36dda4404510af246024833203b9639126a632138c471dd7c1126d48a4f81d76",
+        "count": 163
+      }
+    },
+    "tool_messages": {
+      "exact_match": true,
+      "output": {
+        "combined_sha256": "85a1859313ed902324e40f7210aaf5e49862d7c5f0f17a8c4d6b7cbfeddc4ff1",
+        "count": 240
+      },
+      "source": {
+        "combined_sha256": "85a1859313ed902324e40f7210aaf5e49862d7c5f0f17a8c4d6b7cbfeddc4ff1",
+        "count": 240
+      }
+    },
+    "user_messages": {
+      "exact_match": true,
+      "output": {
+        "combined_sha256": "e5cd4fc714cfcb59c9767834c66de39e2c4cc0fb0a1ecedfc0bf4a9ff48856fe",
+        "count": 20
+      },
+      "source": {
+        "combined_sha256": "e5cd4fc714cfcb59c9767834c66de39e2c4cc0fb0a1ecedfc0bf4a9ff48856fe",
+        "count": 20
+      }
+    }
+  },
+  "prompt_copies": [
+    {
+      "path": "prompts/layer-1-resume.md",
+      "sha256": "32531a5fc66add3f30d17dd2256b252c2a1bdd6ca89b21a83a3d81efd171f188",
+      "size_bytes": 1398
+    },
+    {
+      "path": "prompts/layer-1.md",
+      "sha256": "e2ffb08799af5eb4c5c8ed59d3ca2c4a92ce9467f821abb1781f9c00f1b481d1",
+      "size_bytes": 4013
+    },
+    {
+      "path": "prompts/layer-2.md",
+      "sha256": "e003eab198f243b12786e40883d27966d8ee8be9fc120c38f2efc8c514f3dafe",
+      "size_bytes": 3984
+    },
+    {
+      "path": "prompts/layer-3.md",
+      "sha256": "1427f4f0ca3eebf8340fdcd9a351b26301fcf6b6d8a1867fed421e3360f6f2b9",
+      "size_bytes": 4309
+    },
+    {
+      "path": "prompts/layer-4.md",
+      "sha256": "1518774c70aa0484282d1ec65b873077872302ec7facc415077d912cb82d87af",
+      "size_bytes": 4519
+    },
+    {
+      "path": "prompts/layer-5-resume-attempt-2.md",
+      "sha256": "36a104836a730001d645ab935b16357528f041698433bca516edc1d29b5b9775",
+      "size_bytes": 3150
+    },
+    {
+      "path": "prompts/layer-5-resume-attempt-3.md",
+      "sha256": "3411cecbd505e554b4b985e4cb64ecd134d64dba8fac2af2cea87376bdd141d4",
+      "size_bytes": 2656
+    },
+    {
+      "path": "prompts/layer-5-resume-attempt-4.md",
+      "sha256": "99b1a209083ddd4a530482b9209538d7fa8a737a8d53fd1ec96bbcccdca3e005",
+      "size_bytes": 2081
+    },
+    {
+      "path": "prompts/layer-5.md",
+      "sha256": "0e61d2274277a7aef8352fd7e114f347b70dd393cc3a18162f6644abb35fa51b",
+      "size_bytes": 4468
+    },
+    {
+      "path": "prompts/orchestrator.md",
+      "sha256": "deb677fab615d8c4f7dff558c433a903b219d6e25b996c90101e32a164eef7ed",
+      "size_bytes": 8560
+    }
+  ],
+  "publication_metadata": {
+    "manifest_matches": true,
+    "path": "publication-metadata.json",
+    "pull_request_count": 5,
+    "release_present": false
+  },
+  "schema_version": 1,
+  "secret_scan": {
+    "categories": {
+      "anthropic_key": {
+        "count": 0,
+        "paths": []
+      },
+      "authorization_header": {
+        "count": 0,
+        "paths": []
+      },
+      "aws_access_key_id": {
+        "count": 0,
+        "paths": []
+      },
+      "aws_secret_access_key": {
+        "count": 0,
+        "paths": []
+      },
+      "aws_session_token": {
+        "count": 0,
+        "paths": []
+      },
+      "cookie_header": {
+        "count": 0,
+        "paths": []
+      },
+      "credential_environment_assignment": {
+        "count": 0,
+        "paths": []
+      },
+      "credential_url": {
+        "count": 0,
+        "paths": []
+      },
+      "docker_auth_value": {
+        "count": 0,
+        "paths": []
+      },
+      "github_token": {
+        "count": 0,
+        "paths": []
+      },
+      "jwt": {
+        "count": 0,
+        "paths": []
+      },
+      "named_secret_assignment": {
+        "count": 0,
+        "paths": []
+      },
+      "npm_token": {
+        "count": 0,
+        "paths": []
+      },
+      "openai_key": {
+        "count": 0,
+        "paths": []
+      },
+      "private_key": {
+        "count": 0,
+        "paths": []
+      },
+      "slack_token": {
+        "count": 0,
+        "paths": []
+      },
+      "trampoline_token": {
+        "count": 0,
+        "paths": []
+      }
+    },
+    "scanned_bytes": 3632941,
+    "scanned_files": 41,
+    "total_matches": 0
+  }
+}

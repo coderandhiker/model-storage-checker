@@ -1,0 +1,45 @@
+{
+  "actual_branch": "coderandhiker-v2-add-cleanup-reporting",
+  "artifacts_nonempty": true,
+  "base_sha": "c039b2abc8ad8b498f13104d2b7ffd3410939701",
+  "coauthor_trailer_exact": true,
+  "commit_count_above_base": 1,
+  "commit_sha": "b7aa5e3c1815b605162f58898871cd8945cd7c63",
+  "full_content_evidence": true,
+  "otel_files": [
+    {
+      "invocation": "initial",
+      "path": "otel/layer-5.jsonl",
+      "records": 103,
+      "spans": 65
+    },
+    {
+      "invocation": "attempt-2",
+      "path": "otel/05-reporting-resume-attempt-2.jsonl",
+      "records": 36,
+      "spans": 20
+    },
+    {
+      "invocation": "attempt-3",
+      "path": "otel/05-reporting-resume-attempt-3.jsonl",
+      "records": 31,
+      "spans": 15
+    },
+    {
+      "invocation": "attempt-4",
+      "path": "otel/05-reporting-resume-attempt-4.jsonl",
+      "records": 38,
+      "spans": 22
+    }
+  ],
+  "otel_records": 208,
+  "otel_spans": 122,
+  "passed": true,
+  "pre_amend_commit_sha": "1e4ae08440dab258965feb0617aace51c8077ac1",
+  "python_version": "3.11.15",
+  "recovery": "Authorized amend fixed unified-summary routing while preserving failed/no-change attempt evidence.",
+  "session_trailer_exact": true,
+  "subject_exact": true,
+  "tests_passed": true,
+  "worktree_clean": true
+}

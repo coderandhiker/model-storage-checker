@@ -1,0 +1,65 @@
+{
+  "features": {
+    "defined_name_count": 0,
+    "external_hyperlink_relationships": 0,
+    "formula_count": 0,
+    "hyperlink_elements": 0
+  },
+  "findings": {
+    "bad_archive_entry_paths": [],
+    "duplicate_entries": [],
+    "embedded_object_entries": [],
+    "external_defined_names": [],
+    "external_formula_references": [],
+    "external_link_entries": [],
+    "external_relationships": [],
+    "macro_content_types": [],
+    "macro_entries": [],
+    "unexpected_package_entries": [],
+    "unexpected_relationships": []
+  },
+  "package": {
+    "drawing_entries": 0,
+    "entry_count": 15,
+    "media_entries": 0,
+    "relationship_count": 12,
+    "relationship_types": {
+      "core-properties": 1,
+      "extended-properties": 1,
+      "officeDocument": 1,
+      "sharedStrings": 1,
+      "styles": 1,
+      "theme": 1,
+      "worksheet": 6
+    },
+    "total_compressed_bytes": 12457,
+    "total_uncompressed_bytes": 54762
+  },
+  "safe": true,
+  "safety_checks": {
+    "archive_paths_safe": true,
+    "no_duplicate_entries": true,
+    "no_embedded_objects": true,
+    "no_external_formula_references": true,
+    "no_external_link_parts": true,
+    "no_external_non_hyperlink_relationships": true,
+    "no_macros": true,
+    "no_unexpected_package_entries": true,
+    "no_unexpected_relationships": true
+  },
+  "schema_version": 1,
+  "workbook": {
+    "path": "docs/lineage/model-storage-checker-lineage-run-2.xlsx",
+    "sha256": "8f92fc4226afdfa638383093afaa63aae06401a4289cb0853aaf4a03bd3a8f72",
+    "sheet_count": 6,
+    "sheet_names": [
+      "Sheet1",
+      "Lineage",
+      "Captures",
+      "Pull Requests",
+      "Redactions",
+      "Validation"
+    ],
+    "size_bytes": 14219
+  }
+}

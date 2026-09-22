@@ -1,0 +1,29 @@
+{
+  "actual_branch": "coderandhiker-v2-bootstrap-model-checker",
+  "artifacts_nonempty": true,
+  "base_sha": "c445986e1816a1606384d04a48a6bc0bac86eff3",
+  "coauthor_trailer_exact": true,
+  "commit_count_above_base": 1,
+  "full_content_evidence": true,
+  "otel_files": [
+    {
+      "path": "otel/layer-1.jsonl",
+      "records": 86,
+      "spans": 38
+    },
+    {
+      "path": "otel/layer-1-resume.jsonl",
+      "records": 28,
+      "spans": 14
+    }
+  ],
+  "otel_records": 114,
+  "otel_spans": 52,
+  "passed": true,
+  "python_version": "3.11.15",
+  "recovery": "Same child session resumed in a second process after the external hook path was blocked; separate capture files preserved process isolation.",
+  "session_trailer_exact": true,
+  "subject_exact": true,
+  "tests_passed": true,
+  "worktree_clean": true
+}

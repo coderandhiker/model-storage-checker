@@ -1,0 +1,341 @@
+{
+  "algorithm": "sha256",
+  "external_generated_files": [
+    {
+      "line_count": 38533,
+      "media_type": "application/json",
+      "path": "docs/lineage/data.json",
+      "sha256": "d032fdd8de0063bbb75bf80480d0462e44c6706dc312681d156d0c89fac9cbc9",
+      "size_bytes": 4510351
+    },
+    {
+      "line_count": null,
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "docs/lineage/model-storage-checker-lineage-run-2.xlsx",
+      "sha256": "8f92fc4226afdfa638383093afaa63aae06401a4289cb0853aaf4a03bd3a8f72",
+      "size_bytes": 14219
+    }
+  ],
+  "files": [
+    {
+      "line_count": 241,
+      "media_type": "text/plain",
+      "path": "README.md",
+      "sha256": "2b8b4ed0aa14189f0010552b6368477fdc44b83b6065110e2eab8c656993a6f8",
+      "size_bytes": 10747
+    },
+    {
+      "line_count": 43,
+      "media_type": "text/plain",
+      "path": "driver-audit.jsonl",
+      "sha256": "aa98ebea347fd0a36eebbf7ea969b55617d072503098a469782a7209831db3d8",
+      "size_bytes": 28724
+    },
+    {
+      "line_count": 653,
+      "media_type": "application/json",
+      "path": "manifest.json",
+      "sha256": "e3c07383cbdc6228ff88e298c8874cb0e00bcfc0020aaa6cca2f846d1dca4b9b",
+      "size_bytes": 20799
+    },
+    {
+      "line_count": 36,
+      "media_type": "text/plain",
+      "path": "otel/05-reporting-resume-attempt-2.jsonl",
+      "sha256": "4e5cbd20e48accd2b2af4ce88680549f819739d2bf59005bb9e0e4baa75a94e3",
+      "size_bytes": 171252
+    },
+    {
+      "line_count": 31,
+      "media_type": "text/plain",
+      "path": "otel/05-reporting-resume-attempt-3.jsonl",
+      "sha256": "9c2858b2103b79d837ee6e1f35755ff031f8901440d4eaa7dd2e1bf26a49ee38",
+      "size_bytes": 104492
+    },
+    {
+      "line_count": 38,
+      "media_type": "text/plain",
+      "path": "otel/05-reporting-resume-attempt-4.jsonl",
+      "sha256": "3f1f264b48b1ee37def1d58621899c800e60b9f60e160070e16393a50854bd33",
+      "size_bytes": 168895
+    },
+    {
+      "line_count": 28,
+      "media_type": "text/plain",
+      "path": "otel/layer-1-resume.jsonl",
+      "sha256": "a2e95b131949b23321d62fb5ddb8ffd86032e9680428b5e156a24f83645a0cd7",
+      "size_bytes": 98739
+    },
+    {
+      "line_count": 86,
+      "media_type": "text/plain",
+      "path": "otel/layer-1.jsonl",
+      "sha256": "5d86c92443d523c855faa3d927d0d5c94ffaa78d2a4fe815176dca0f23d1e437",
+      "size_bytes": 337279
+    },
+    {
+      "line_count": 106,
+      "media_type": "text/plain",
+      "path": "otel/layer-2.jsonl",
+      "sha256": "3fce7addc112d60310a48047b1346ca57b14b5e41442bfe7f6aa1cda52ccc878",
+      "size_bytes": 419863
+    },
+    {
+      "line_count": 155,
+      "media_type": "text/plain",
+      "path": "otel/layer-3.jsonl",
+      "sha256": "c0526db6dcdc2cf60e37310c78b7c2e0fe844e5a1cf833b73a7c798fbb39a9c4",
+      "size_bytes": 737458
+    },
+    {
+      "line_count": 139,
+      "media_type": "text/plain",
+      "path": "otel/layer-4.jsonl",
+      "sha256": "bd7fc3dce897cc28cb5ad7e1c37c4a8d9c6085fa3dd4db6aad4e9018c1a50dbd",
+      "size_bytes": 722410
+    },
+    {
+      "line_count": 103,
+      "media_type": "text/plain",
+      "path": "otel/layer-5.jsonl",
+      "sha256": "20f36da05efdcb5a5b92c5d9c78fc86afd3ae36c24141ede868b7bec1401df8d",
+      "size_bytes": 527719
+    },
+    {
+      "line_count": 48,
+      "media_type": "text/plain",
+      "path": "otel/orchestrator.jsonl",
+      "sha256": "72c0331f16e523c9a0915922674050d248d5e42dfd5752981ecd5fdc5a412293",
+      "size_bytes": 207680
+    },
+    {
+      "line_count": 14,
+      "media_type": "text/plain",
+      "path": "prompts/layer-1-resume.md",
+      "sha256": "32531a5fc66add3f30d17dd2256b252c2a1bdd6ca89b21a83a3d81efd171f188",
+      "size_bytes": 1398
+    },
+    {
+      "line_count": 59,
+      "media_type": "text/plain",
+      "path": "prompts/layer-1.md",
+      "sha256": "e2ffb08799af5eb4c5c8ed59d3ca2c4a92ce9467f821abb1781f9c00f1b481d1",
+      "size_bytes": 4013
+    },
+    {
+      "line_count": 57,
+      "media_type": "text/plain",
+      "path": "prompts/layer-2.md",
+      "sha256": "e003eab198f243b12786e40883d27966d8ee8be9fc120c38f2efc8c514f3dafe",
+      "size_bytes": 3984
+    },
+    {
+      "line_count": 58,
+      "media_type": "text/plain",
+      "path": "prompts/layer-3.md",
+      "sha256": "1427f4f0ca3eebf8340fdcd9a351b26301fcf6b6d8a1867fed421e3360f6f2b9",
+      "size_bytes": 4309
+    },
+    {
+      "line_count": 59,
+      "media_type": "text/plain",
+      "path": "prompts/layer-4.md",
+      "sha256": "1518774c70aa0484282d1ec65b873077872302ec7facc415077d912cb82d87af",
+      "size_bytes": 4519
+    },
+    {
+      "line_count": 46,
+      "media_type": "text/plain",
+      "path": "prompts/layer-5-resume-attempt-2.md",
+      "sha256": "36a104836a730001d645ab935b16357528f041698433bca516edc1d29b5b9775",
+      "size_bytes": 3150
+    },
+    {
+      "line_count": 32,
+      "media_type": "text/plain",
+      "path": "prompts/layer-5-resume-attempt-3.md",
+      "sha256": "3411cecbd505e554b4b985e4cb64ecd134d64dba8fac2af2cea87376bdd141d4",
+      "size_bytes": 2656
+    },
+    {
+      "line_count": 29,
+      "media_type": "text/plain",
+      "path": "prompts/layer-5-resume-attempt-4.md",
+      "sha256": "99b1a209083ddd4a530482b9209538d7fa8a737a8d53fd1ec96bbcccdca3e005",
+      "size_bytes": 2081
+    },
+    {
+      "line_count": 59,
+      "media_type": "text/plain",
+      "path": "prompts/layer-5.md",
+      "sha256": "0e61d2274277a7aef8352fd7e114f347b70dd393cc3a18162f6644abb35fa51b",
+      "size_bytes": 4468
+    },
+    {
+      "line_count": 105,
+      "media_type": "text/plain",
+      "path": "prompts/orchestrator.md",
+      "sha256": "deb677fab615d8c4f7dff558c433a903b219d6e25b996c90101e32a164eef7ed",
+      "size_bytes": 8560
+    },
+    {
+      "line_count": 46,
+      "media_type": "application/json",
+      "path": "publication-metadata.json",
+      "sha256": "b30f122f98ecb119ccb869c5b90046a632267d9b788eb07392451fd00904244d",
+      "size_bytes": 1612
+    },
+    {
+      "line_count": 7371,
+      "media_type": "application/json",
+      "path": "redaction-report.json",
+      "sha256": "8960b2b36000bf9a46244c36d22d2011c0ab5d7d48e45d5a81ae08e8c513da19",
+      "size_bytes": 338293
+    },
+    {
+      "line_count": 104,
+      "media_type": "application/json",
+      "path": "usage/05-reporting-resume-attempt-2.json",
+      "sha256": "f5cc1de57bdd407627174132070220ed530fb95167fde33eef3672a5cda29b63",
+      "size_bytes": 2390
+    },
+    {
+      "line_count": 104,
+      "media_type": "application/json",
+      "path": "usage/05-reporting-resume-attempt-3.json",
+      "sha256": "86fceb68da07a320023033d7e7d0adc12fa04914c69359a5c1be195d1c847bd7",
+      "size_bytes": 2398
+    },
+    {
+      "line_count": 104,
+      "media_type": "application/json",
+      "path": "usage/05-reporting-resume-attempt-4.json",
+      "sha256": "8e2fe83dbe3abdafcf17a064a1d3e23ccfcfcc682ab2b1a8bee4cbb9b736f12e",
+      "size_bytes": 2398
+    },
+    {
+      "line_count": 110,
+      "media_type": "application/json",
+      "path": "usage/layer-1-resume.json",
+      "sha256": "01d1919e3eff5f551953335ae3539254fc582959e1b810a2ec08a523fd650665",
+      "size_bytes": 2591
+    },
+    {
+      "line_count": 110,
+      "media_type": "application/json",
+      "path": "usage/layer-1.json",
+      "sha256": "d6525e45fcdfc9d8fc3ca228534c56ac665642d287e7c09eb6e373a1feee8772",
+      "size_bytes": 2591
+    },
+    {
+      "line_count": 105,
+      "media_type": "application/json",
+      "path": "usage/layer-2.json",
+      "sha256": "9811f3ddd14daf2f8605c96209cebad9d410df709793761d4db310ece9cae4ff",
+      "size_bytes": 2421
+    },
+    {
+      "line_count": 108,
+      "media_type": "application/json",
+      "path": "usage/layer-3.json",
+      "sha256": "48dbe4870f2c6a3e59d99baf68c636ba6b8ba45bf5a0e104d50ea4fd86d35765",
+      "size_bytes": 2564
+    },
+    {
+      "line_count": 106,
+      "media_type": "application/json",
+      "path": "usage/layer-4.json",
+      "sha256": "59f42487e7f2d114f5d382129324963fcd53a1224cb3a16ae5b8c92156a1b5b7",
+      "size_bytes": 2452
+    },
+    {
+      "line_count": 104,
+      "media_type": "application/json",
+      "path": "usage/layer-5.json",
+      "sha256": "e8b835f8a513020fb6cdcac1a5d57d05df7bc3060cb243ba5c5e91b33be2e728",
+      "size_bytes": 2379
+    },
+    {
+      "line_count": 104,
+      "media_type": "application/json",
+      "path": "usage/orchestrator.json",
+      "sha256": "5694198771c6d7ac0049290aab9d588befdeea2ea09231c3bb8abdc2192bc2b9",
+      "size_bytes": 2328
+    },
+    {
+      "line_count": 241,
+      "media_type": "application/json",
+      "path": "validation/final-validation.json",
+      "sha256": "13e5e0c8863e0f9925c71d8df5d43b26e84218eb695907c6b1c29e7851728de1",
+      "size_bytes": 7081
+    },
+    {
+      "line_count": 29,
+      "media_type": "application/json",
+      "path": "validation/layer-1.json",
+      "sha256": "fb00136ea11c7049f7b8ac40379dfb1871c774d2c81ffa27a6173df96a899256",
+      "size_bytes": 816
+    },
+    {
+      "line_count": 17,
+      "media_type": "application/json",
+      "path": "validation/layer-2.json",
+      "sha256": "345e0ee5b216d927be5f94d1214d52486d314aa3b686dd2515881cd38d245ae1",
+      "size_bytes": 588
+    },
+    {
+      "line_count": 17,
+      "media_type": "application/json",
+      "path": "validation/layer-3.json",
+      "sha256": "1ba9afdebdd94022de17856d0ec0b7cde2d00bc7bbfe58245ce90de5378e76ac",
+      "size_bytes": 576
+    },
+    {
+      "line_count": 45,
+      "media_type": "application/json",
+      "path": "validation/layer-5-corrected.json",
+      "sha256": "4ad9fcd769214af46baeeeb9a15331e6e79359b238185cc0c7eff8892cd00fda",
+      "size_bytes": 1269
+    },
+    {
+      "line_count": 9,
+      "media_type": "application/json",
+      "path": "validation/parent.json",
+      "sha256": "d792f20ef984a8749634d89bd558a0ccf1a900b0af9cf45154420444068acc75",
+      "size_bytes": 201
+    },
+    {
+      "line_count": 258,
+      "media_type": "application/json",
+      "path": "validation/sanitization-validation.json",
+      "sha256": "8c91866ab4f3c80bc2435484d99a66e2defcbea9549dc01605f1460d784bdd8c",
+      "size_bytes": 6611
+    },
+    {
+      "line_count": 58,
+      "media_type": "application/json",
+      "path": "validation/secret-scan-summary.json",
+      "sha256": "f8d96a9aa9e80e9b8018a21fe098d931d767adfd3dc156765d6a3c9085d72876",
+      "size_bytes": 1091
+    },
+    {
+      "line_count": 65,
+      "media_type": "application/json",
+      "path": "validation/workbook-safety.json",
+      "sha256": "2be5d19b8b18fee9f772c53ad47c135eebbcd57c3bc1b0b3ec1b53d135de4f85",
+      "size_bytes": 1703
+    }
+  ],
+  "schema_version": 1,
+  "self_integrity": {
+    "canonical_sha256": "477fc772f82bb2b35c79738ff2e92f82bb03fb454be05c272291edbbf18f8088",
+    "mode": "SHA-256 of canonical JSON excluding self_integrity; exact file self-hashing is intentionally avoided."
+  },
+  "summary": {
+    "external_file_count": 2,
+    "file_count": 46,
+    "largest_file_bytes": 4510351,
+    "telemetry_file_count": 44,
+    "total_size_bytes": 8504118
+  }
+}

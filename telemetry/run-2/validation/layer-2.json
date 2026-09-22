@@ -1,0 +1,17 @@
+{
+  "actual_branch": "coderandhiker-v2-add-ollama-inventory",
+  "artifacts_nonempty": true,
+  "base_sha": "526d4ef413a2760fa5ed1c010e2f577d757d2480",
+  "coauthor_trailer_exact": true,
+  "commit_count_above_base": 1,
+  "driver_recovery": "Child succeeded; verifier cleanup was made idempotent after the child removed its temporary local hook directory.",
+  "full_content_evidence": true,
+  "otel_records": 106,
+  "otel_spans": 56,
+  "passed": true,
+  "python_version": "3.11.15",
+  "session_trailer_exact": true,
+  "subject_exact": true,
+  "tests_passed": true,
+  "worktree_clean": true
+}

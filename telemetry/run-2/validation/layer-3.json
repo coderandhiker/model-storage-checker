@@ -1,0 +1,17 @@
+{
+  "actual_branch": "coderandhiker-v2-add-lm-studio-inventory",
+  "artifacts_nonempty": true,
+  "base_sha": "f324548ef28cd2ba2f9ba058a6d22a3099efe03f",
+  "coauthor_trailer_exact": true,
+  "commit_count_above_base": 1,
+  "driver_recovery": "Child succeeded; verifier co-author regular expression was corrected without modifying the commit.",
+  "full_content_evidence": true,
+  "otel_records": 155,
+  "otel_spans": 81,
+  "passed": true,
+  "python_version": "3.11.15",
+  "session_trailer_exact": true,
+  "subject_exact": true,
+  "tests_passed": true,
+  "worktree_clean": true
+}

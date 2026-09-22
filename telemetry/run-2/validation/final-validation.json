@@ -1,0 +1,241 @@
+{
+  "all_worktrees_clean": true,
+  "captures": [
+    {
+      "full_content_evidence": true,
+      "name": "orchestrator",
+      "otel_records": 48,
+      "output_records": 10099,
+      "resource_attributes_match": true,
+      "session_id": "4a60b396-7386-40e7-a530-b073988a07f7",
+      "spans": 15,
+      "telemetry_path": "otel/orchestrator.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-1-initial",
+      "otel_records": 86,
+      "output_records": 11423,
+      "resource_attributes_match": true,
+      "session_id": "fcde51a0-d70c-4ee9-a538-c2f335c28058",
+      "spans": 38,
+      "telemetry_path": "otel/layer-1.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-1-resume",
+      "otel_records": 28,
+      "output_records": 2066,
+      "resource_attributes_match": true,
+      "session_id": "fcde51a0-d70c-4ee9-a538-c2f335c28058",
+      "spans": 14,
+      "telemetry_path": "otel/layer-1-resume.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-2",
+      "otel_records": 106,
+      "output_records": 9282,
+      "resource_attributes_match": true,
+      "session_id": "d8d12118-ec2b-4fe1-abdd-9abfa0c8e755",
+      "spans": 56,
+      "telemetry_path": "otel/layer-2.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-3",
+      "otel_records": 155,
+      "output_records": 14489,
+      "resource_attributes_match": true,
+      "session_id": "3794ecb9-b919-444e-ac7b-34686c5b17d5",
+      "spans": 81,
+      "telemetry_path": "otel/layer-3.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-4",
+      "otel_records": 139,
+      "output_records": 12220,
+      "resource_attributes_match": true,
+      "session_id": "c20d130e-f890-431d-aee8-32801bad8b31",
+      "spans": 77,
+      "telemetry_path": "otel/layer-4.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-5-initial",
+      "otel_records": 103,
+      "output_records": 7592,
+      "resource_attributes_match": true,
+      "session_id": "a3def810-4c47-4cbd-9c3b-78fcc833cc4a",
+      "spans": 65,
+      "telemetry_path": "otel/layer-5.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-5-attempt-2",
+      "otel_records": 36,
+      "output_records": 1637,
+      "resource_attributes_match": true,
+      "session_id": "a3def810-4c47-4cbd-9c3b-78fcc833cc4a",
+      "spans": 20,
+      "telemetry_path": "otel/05-reporting-resume-attempt-2.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-5-attempt-3",
+      "otel_records": 31,
+      "output_records": 1431,
+      "resource_attributes_match": true,
+      "session_id": "a3def810-4c47-4cbd-9c3b-78fcc833cc4a",
+      "spans": 15,
+      "telemetry_path": "otel/05-reporting-resume-attempt-3.jsonl"
+    },
+    {
+      "full_content_evidence": true,
+      "name": "layer-5-attempt-4",
+      "otel_records": 38,
+      "output_records": 1959,
+      "resource_attributes_match": true,
+      "session_id": "a3def810-4c47-4cbd-9c3b-78fcc833cc4a",
+      "spans": 22,
+      "telemetry_path": "otel/05-reporting-resume-attempt-4.jsonl"
+    }
+  ],
+  "commit_chain": [
+    {
+      "branch": "coderandhiker-v2-bootstrap-model-checker",
+      "clean": true,
+      "commit_sha": "526d4ef413a2760fa5ed1c010e2f577d757d2480",
+      "layer": 1,
+      "parent_sha": "c445986e1816a1606384d04a48a6bc0bac86eff3",
+      "tree_sha": "1024aa70e66613144ca57a24fb6889a2e9899fce"
+    },
+    {
+      "branch": "coderandhiker-v2-add-ollama-inventory",
+      "clean": true,
+      "commit_sha": "f324548ef28cd2ba2f9ba058a6d22a3099efe03f",
+      "layer": 2,
+      "parent_sha": "526d4ef413a2760fa5ed1c010e2f577d757d2480",
+      "tree_sha": "f3e5fd34899c3941fdc3879d9bc0da275bcee2c9"
+    },
+    {
+      "branch": "coderandhiker-v2-add-lm-studio-inventory",
+      "clean": true,
+      "commit_sha": "f78114c939a24c970d3c71a92185f47d92f6b61b",
+      "layer": 3,
+      "parent_sha": "f324548ef28cd2ba2f9ba058a6d22a3099efe03f",
+      "tree_sha": "983be3291248f5d9da25553eac020eabd740d249"
+    },
+    {
+      "branch": "coderandhiker-v2-add-docker-inventory",
+      "clean": true,
+      "commit_sha": "c039b2abc8ad8b498f13104d2b7ffd3410939701",
+      "layer": 4,
+      "parent_sha": "f78114c939a24c970d3c71a92185f47d92f6b61b",
+      "tree_sha": "6e02bcd0617e406bf0da4bbe0ece3dfac8f473b2"
+    },
+    {
+      "branch": "coderandhiker-v2-add-cleanup-reporting",
+      "clean": true,
+      "commit_sha": "b7aa5e3c1815b605162f58898871cd8945cd7c63",
+      "layer": 5,
+      "parent_sha": "c039b2abc8ad8b498f13104d2b7ffd3410939701",
+      "tree_sha": "dd3bf67e80703095ef5fa2a0999353c0a4845429"
+    }
+  ],
+  "completed_at": "2026-09-22T19:21:56.939737Z",
+  "driver_audit_final_record_included": true,
+  "driver_audit_records": 43,
+  "final_commit_sha": "b7aa5e3c1815b605162f58898871cd8945cd7c63",
+  "final_tests": {
+    "log": "[REMOVED:UNPUBLISHED_ARTIFACT_PATH:c07bd025ca54]",
+    "passed": true,
+    "python": "3.11.15",
+    "tests_run": 49
+  },
+  "logical_sessions": 6,
+  "orchestration": {
+    "limitation": "Logical lineage only; nested Copilot CLI process startup was unreliable in the parent tool sandbox.",
+    "linkage": "poc.parent_session_id+driver-audit",
+    "mode": "host-driven",
+    "process_nesting": false
+  },
+  "origin_main_sha": "c445986e1816a1606384d04a48a6bc0bac86eff3",
+  "otel_records": 770,
+  "otel_spans": 403,
+  "output_json_records": 72198,
+  "process_capture_files": 10,
+  "production_dependencies_standard_library_only": true,
+  "publication": {
+    "gists_created": false,
+    "pull_requests_created_or_edited": false,
+    "pushed": false,
+    "releases_created": false,
+    "remote_export": false,
+    "telemetry_tracked_or_committed": false
+  },
+  "remote": {
+    "origin_main_unchanged": true,
+    "remote_v2_branches": 0
+  },
+  "secret_scan": {
+    "categories": {
+      "anthropic_key": {
+        "count": 0,
+        "paths": []
+      },
+      "aws_access_key_id": {
+        "count": 0,
+        "paths": []
+      },
+      "credential_url": {
+        "count": 0,
+        "paths": []
+      },
+      "docker_auth_value": {
+        "count": 0,
+        "paths": []
+      },
+      "github_token": {
+        "count": 0,
+        "paths": []
+      },
+      "jwt": {
+        "count": 0,
+        "paths": []
+      },
+      "named_secret_assignment": {
+        "count": 0,
+        "paths": []
+      },
+      "npm_token": {
+        "count": 0,
+        "paths": []
+      },
+      "openai_key": {
+        "count": 0,
+        "paths": []
+      },
+      "private_key_block": {
+        "count": 0,
+        "paths": []
+      },
+      "slack_token": {
+        "count": 0,
+        "paths": []
+      }
+    },
+    "runtime_copy_excluded": true,
+    "scanned_bytes": 45917426,
+    "scanned_file_entries": 172,
+    "scope": [
+      "all regular run-directory artifacts except generated summary and bytecode",
+      "all tracked blobs in each of the five implementation commits",
+      "five commit messages"
+    ],
+    "total_matches": 0,
+    "values_reported": false
+  },
+  "status": "passed"
+}

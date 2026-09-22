@@ -1,0 +1,108 @@
+{
+  "agentMetrics": {
+    "main": {
+      "modelMetrics": {
+        "gpt-5.6-sol": {
+          "requests": {
+            "cost": 1,
+            "count": 31
+          },
+          "tokenDetails": {
+            "cache_read": {
+              "tokenCount": 1423295
+            },
+            "cache_write": {
+              "tokenCount": 67651
+            },
+            "input": {
+              "tokenCount": 93
+            },
+            "output": {
+              "tokenCount": 21486
+            }
+          },
+          "totalNanoAiu": 133766500000,
+          "usage": {
+            "cacheReadTokens": 1423295,
+            "cacheWriteTokens": 67651,
+            "inputTokens": 1491039,
+            "outputTokens": 21486,
+            "reasoningTokens": 8156
+          }
+        }
+      },
+      "totalApiDurationMs": 331672,
+      "totalNanoAiu": 133766500000
+    }
+  },
+  "codeChanges": {
+    "filesModified": [
+      "src/model_storage_checker/models.py",
+      "src/model_storage_checker/lm_studio.py",
+      "src/model_storage_checker/providers.py",
+      "src/model_storage_checker/cli.py",
+      "src/model_storage_checker/__init__.py",
+      "README.md",
+      "tests/test_lm_studio.py",
+      "tests/test_cli.py",
+      ".copilot-hooks/prepare-commit-msg",
+      ".test-shim/sitecustomize.py"
+    ],
+    "filesModifiedCount": 10,
+    "linesAdded": 716,
+    "linesRemoved": 70
+  },
+  "currentModel": "gpt-5.6-sol",
+  "lastCallInputTokens": 67654,
+  "lastCallOutputTokens": 424,
+  "modelMetrics": {
+    "gpt-5.6-sol": {
+      "cacheExpiresAt": "2026-09-22T19:34:40.475Z",
+      "requests": {
+        "cost": 1,
+        "count": 31
+      },
+      "tokenDetails": {
+        "cache_read": {
+          "tokenCount": 1423295
+        },
+        "cache_write": {
+          "tokenCount": 67651
+        },
+        "input": {
+          "tokenCount": 93
+        },
+        "output": {
+          "tokenCount": 21486
+        }
+      },
+      "totalNanoAiu": 133766500000,
+      "usage": {
+        "cacheReadTokens": 1423295,
+        "cacheWriteTokens": 67651,
+        "inputTokens": 1491039,
+        "outputTokens": 21486,
+        "reasoningTokens": 8156
+      }
+    }
+  },
+  "sessionStartTime": "2026-09-22T18:59:09.632Z",
+  "tokenDetails": {
+    "cache_read": {
+      "tokenCount": 1423295
+    },
+    "cache_write": {
+      "tokenCount": 67651
+    },
+    "input": {
+      "tokenCount": 93
+    },
+    "output": {
+      "tokenCount": 21486
+    }
+  },
+  "totalApiDurationMs": 331672,
+  "totalNanoAiu": 133766500000,
+  "totalPremiumRequestCost": 1,
+  "totalUserRequests": 1
+}

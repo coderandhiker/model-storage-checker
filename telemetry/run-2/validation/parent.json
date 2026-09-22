@@ -1,0 +1,9 @@
+{
+  "artifacts_nonempty": true,
+  "child_prompts_valid": true,
+  "delegation_plan_valid": true,
+  "driver_audit_records": 3,
+  "full_content_evidence": true,
+  "otel_records": 48,
+  "otel_spans": 15
+}

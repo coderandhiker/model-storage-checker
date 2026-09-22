@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Offline Copilot prompt, session, telemetry, tool, commit, and branch lineage evidence."
+    >
+    <title>Copilot lineage evidence</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Customer-shareable evidence package</p>
+        <h1>Copilot lineage evidence</h1>
+        <p id="subtitle" class="subtitle">
+          Loading sanitized prompt, session, telemetry, and Git lineage…
+        </p>
+      </div>
+      <div id="summary" class="summary-grid" aria-label="Evidence summary"></div>
+    </header>
+
+    <div id="error-banner" class="error-banner" role="alert" hidden>
+      <strong>Dashboard data could not be loaded.</strong>
+      <span id="error-message"></span>
+      <span>
+        Serve this directory over HTTP, for example
+        <code>python3 -m http.server --directory docs/lineage 8000</code>.
+      </span>
+    </div>
+
+    <aside class="limitation" aria-label="Lineage limitation">
+      <strong>Scope:</strong>
+      this package demonstrates host-driven logical lineage through captured
+      session IDs and audit records. It does not claim operating-system process
+      nesting or W3C trace-context propagation between sessions.
+    </aside>
+
+    <section class="toolbar" aria-label="Graph controls">
+      <label>
+        <span>Search</span>
+        <input
+          id="search"
+          type="search"
+          placeholder="Prompt, session, tool, commit…"
+          autocomplete="off"
+        >
+      </label>
+      <label>
+        <span>Layer</span>
+        <select id="layer-filter">
+          <option value="">All layers</option>
+        </select>
+      </label>
+      <label>
+        <span>Session</span>
+        <select id="session-filter">
+          <option value="">All sessions</option>
+        </select>
+      </label>
+      <div class="button-group" aria-label="Disclosure controls">
+        <button id="expand-selected" type="button">Expand selected</button>
+        <button id="collapse-selected" type="button">Collapse selected</button>
+      </div>
+      <div class="button-group" aria-label="Viewport controls">
+        <button id="fit-graph" type="button">Fit</button>
+        <button id="reset-graph" type="button">Reset</button>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <section class="graph-card" aria-labelledby="graph-heading">
+        <div class="card-heading">
+          <div>
+            <p class="eyebrow">Primary evidence path</p>
+            <h2 id="graph-heading">Lineage graph</h2>
+          </div>
+          <p id="graph-status" class="graph-status" aria-live="polite">
+            Loading graph…
+          </p>
+        </div>
+        <div
+          id="graph"
+          tabindex="0"
+          aria-label="Interactive lineage graph. Select a node to inspect it. Press Enter to expand and Escape to collapse."
+        ></div>
+        <div class="legend" aria-label="Graph legend">
+          <span><i class="legend-swatch prompt"></i>Prompt/session</span>
+          <span><i class="legend-swatch telemetry"></i>Telemetry/activity</span>
+          <span><i class="legend-swatch git"></i>Git evidence</span>
+          <span><i class="legend-swatch planned"></i>Publication placeholder</span>
+          <span><i class="legend-line"></i>Primary path</span>
+        </div>
+      </section>
+
+      <aside class="details-card" aria-labelledby="details-heading">
+        <div class="card-heading">
+          <div>
+            <p class="eyebrow">Master-detail inspector</p>
+            <h2 id="details-heading">Selected evidence</h2>
+          </div>
+        </div>
+        <nav aria-label="Selected node path">
+          <ol id="breadcrumbs" class="breadcrumbs"></ol>
+        </nav>
+        <div id="selection-badges" class="badge-row"></div>
+        <p id="selection-summary" class="selection-summary">
+          Select a node to inspect sanitized evidence and provenance.
+        </p>
+        <div id="details" class="details-content"></div>
+      </aside>
+    </main>
+
+    <script src="vendor/cytoscape-3.30.4.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

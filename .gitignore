@@ -6,5 +6,19 @@ __pycache__/
 .mypy_cache/
 .venv/
 .copilot-hooks/
+node_modules/
 build/
 dist/
+
+# Private lineage captures and local generation scratch.
+lineage-run-*/
+telemetry/raw/
+telemetry/local-*/
+telemetry/run-*/
+!telemetry/run-2/
+!telemetry/run-2/**
+telemetry/*.tmp/
+docs/lineage/.tmp/
+
+# Raw local telemetry workbooks must never be published.
+github_copilot_traces.xlsx
